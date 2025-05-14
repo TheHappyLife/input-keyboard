@@ -190,7 +190,3 @@ keyboardRef.current?.setValue("123.45");
 - Firefox (latest)
 - Safari (latest)
 - Edge (latest)
-
-## License
-
-MIT
