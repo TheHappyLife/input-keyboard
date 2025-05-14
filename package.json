@@ -1,5 +1,5 @@
 {
-  "name": "input-keyboard",
+  "name": "tek-keyboard",
   "version": "0.0.0",
   "description": "A custom input and keyboard",
   "main": "dist/index.js",
