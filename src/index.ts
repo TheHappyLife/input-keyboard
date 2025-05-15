@@ -1,3 +1,6 @@
-import InputKeyboard from "./components/Keyboard";
+export { InputKeyboard } from "./components/InputKeyboard";
+export type { InputKeyboardProps, InputKeyboardRef } from "./components/InputKeyboard/type";
+export { THEME } from "./components/InputKeyboard/type";
 
-export { InputKeyboard };
+export { Input } from "./components/InputKeyboard/components/Input";
+export type { InputProps, InputRef, InputThemeValues } from "./components/InputKeyboard/components/Input/type";
