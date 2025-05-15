@@ -1,12 +1,4 @@
-import React, {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import {
   DisplayType,
   KeyboardType,
@@ -33,10 +25,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const keyboardsSectionRef = useRef<HTMLDivElement>(null);
   const valueRef = useRef("");
   const displayValueRef = useRef<KeyboardDisplayValue[]>([]);
-  const keyboardType = useMemo(
-    () => props.keyboardType ?? KeyboardType.Decimal,
-    [props.keyboardType]
-  );
+  const keyboardType = useMemo(() => props.keyboardType ?? KeyboardType.Decimal, [props.keyboardType]);
   const displayType = useMemo(() => props.displayType ?? DisplayType.Text, [props.displayType]);
   const replaceElement = useMemo(() => props.replaceElement ?? "*", [props.replaceElement]);
   const numOfRows = useMemo(() => NUM_OF_ROWS[keyboardType] ?? 4, [keyboardType]);
