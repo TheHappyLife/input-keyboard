@@ -1,6 +1,16 @@
-# Input Component Documentation
+# Package Overview
 
-## Overview
+This package provides three main components for creating a virtual keyboard input system:
+
+1. [Input Component](#input-component) - A customizable text input field
+2. [Keyboard Component](#keyboard-component) - A virtual keyboard with different types and display modes
+3. [InputKeyboard Component](#inputkeyboard-component) - An integrated solution combining Input and Keyboard components
+
+Each component can be used independently or together to create a complete virtual keyboard input system. Click on the component names above to jump to their detailed documentation.
+
+## Input Component
+
+### Overview
 
 The Input component is a customizable text input field that supports various themes, styling options, and additional features like left/right elements and cursor animation.
 
@@ -150,9 +160,9 @@ import { Input } from './components/InputKeyboard';
 - Placeholder support
 - Focus/blur handling
 
-# Keyboard Component Documentation
+## Keyboard Component
 
-## Overview
+### Overview
 
 The Keyboard component is a customizable virtual keyboard that can be integrated with the Input component. It supports different keyboard types, display modes, and themes.
 
@@ -290,9 +300,9 @@ import { Keyboard } from './components/InputKeyboard';
 - Value formatting
 - Event handling for open/close/change
 
-# InputKeyboard Component Documentation
+## InputKeyboard Component
 
-## Overview
+### Overview
 
 The InputKeyboard component is a combination of the Input and Keyboard components, providing an integrated solution for text input with a virtual keyboard. It handles the interaction between the input field and keyboard, managing focus states and value synchronization.
 
