@@ -14,6 +14,31 @@ Each component can be used independently or together to create a complete virtua
 
 The Input component is a customizable text input field that supports various themes, styling options, and additional features like left/right elements and cursor animation.
 
+### Exposed Methods
+
+The Input component exposes the following methods through `forwardRef`:
+
+```typescript
+interface InputRef {
+  focus: () => void; // Focus the input field
+  blur: () => void; // Remove focus from the input field
+}
+```
+
+Usage example:
+
+```tsx
+const inputRef = useRef<InputRef>(null);
+
+// Focus the input
+inputRef.current?.focus();
+
+// Blur the input
+inputRef.current?.blur();
+
+<Input ref={inputRef} />;
+```
+
 ## Props
 
 ### Basic Props
@@ -166,6 +191,35 @@ import { Input } from './components/InputKeyboard';
 
 The Keyboard component is a customizable virtual keyboard that can be integrated with the Input component. It supports different keyboard types, display modes, and themes.
 
+### Exposed Methods
+
+The Keyboard component exposes the following methods through `forwardRef`:
+
+```typescript
+interface KeyboardRef {
+  open: () => void; // Open the keyboard
+  close: () => void; // Close the keyboard
+  setValue: (value: string) => void; // Set the keyboard's value
+}
+```
+
+Usage example:
+
+```tsx
+const keyboardRef = useRef<KeyboardRef>(null);
+
+// Open the keyboard
+keyboardRef.current?.open();
+
+// Close the keyboard
+keyboardRef.current?.close();
+
+// Set keyboard value
+keyboardRef.current?.setValue("123");
+
+<Keyboard ref={keyboardRef} />;
+```
+
 ## Props
 
 ### Basic Props
@@ -305,6 +359,31 @@ import { Keyboard } from './components/InputKeyboard';
 ### Overview
 
 The InputKeyboard component is a combination of the Input and Keyboard components, providing an integrated solution for text input with a virtual keyboard. It handles the interaction between the input field and keyboard, managing focus states and value synchronization.
+
+### Exposed Methods
+
+The InputKeyboard component exposes the following methods through `forwardRef`:
+
+```typescript
+interface InputKeyboardRef {
+  focus: () => void; // Focus the input and open the keyboard
+  blur: () => void; // Remove focus from the input and close the keyboard
+}
+```
+
+Usage example:
+
+```tsx
+const inputKeyboardRef = useRef<InputKeyboardRef>(null);
+
+// Focus the input and open keyboard
+inputKeyboardRef.current?.focus();
+
+// Blur the input and close keyboard
+inputKeyboardRef.current?.blur();
+
+<InputKeyboard ref={inputKeyboardRef} />;
+```
 
 ## Props
 
