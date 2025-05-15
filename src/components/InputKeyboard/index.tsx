@@ -1,6 +1,6 @@
 import { forwardRef, ReactNode, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Input } from "./components/Input";
-import Keyboard from "./components/Keyboard";
+import { Keyboard } from "./components/Keyboard";
 import { KeyboardRef, KeyboardValuesType } from "./components/Keyboard/type";
 import { InputRef } from "./components/Input/type";
 import { InputKeyboardProps, InputKeyboardRef, THEME } from "./type";

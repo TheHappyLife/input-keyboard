@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, CSSProperties } from "react";
 import { THEME } from "../../type";
 export interface InputProps {
   displayValue?: ReactNode[];
@@ -10,6 +10,10 @@ export interface InputProps {
   themeValuesOverride?: InputThemeValues;
   leftElement?: ReactNode;
   rightElement?: ReactNode;
+  inputStyle?: CSSProperties;
+  textStyle?: CSSProperties;
+  placeholderStyle?: CSSProperties;
+  containerStyle?: CSSProperties;
 }
 
 export interface InputRef {

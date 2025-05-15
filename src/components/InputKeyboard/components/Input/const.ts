@@ -24,6 +24,7 @@ export const INPUT_CONTAINER_STYLE: CSSProperties = {
   padding: "0.75rem 1rem",
   borderRadius: "0.75rem",
 };
+
 export const INPUT_STYLE: CSSProperties = {
   overflow: "hidden",
   flexGrow: 1,
@@ -32,4 +33,16 @@ export const INPUT_STYLE: CSSProperties = {
 
 export const INPUT_PLACEHOLDER_STYLE: CSSProperties = {
   fontSize: "0.9em",
+};
+
+export const INPUT_TEXT_CONTAINER_STYLE: CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  fontSize: "1em",
+  position: "relative",
+  width: "fit-content",
+};
+
+export const INPUT_PLACEHOLDER_CONTAINER_STYLE: CSSProperties = {
+  display: "inline-block",
 };

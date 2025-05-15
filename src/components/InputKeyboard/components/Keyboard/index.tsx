@@ -153,4 +153,4 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
 
 Keyboard.displayName = "Keyboard";
 
-export default Keyboard;
+export { Keyboard };
