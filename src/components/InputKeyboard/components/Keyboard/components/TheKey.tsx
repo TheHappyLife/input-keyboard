@@ -2,12 +2,7 @@ import { useState } from "react";
 import { TheKeyProps } from "../type";
 import { KEY_NORMAL_STYLE, SUB_LABEL_STYLE } from "./const";
 
-const TheKey: React.FC<TheKeyProps> = ({
-  keyboard,
-  handleKeyboardKeyClick,
-  themeValues,
-  styles,
-}) => {
+const TheKey: React.FC<TheKeyProps> = ({ keyboard, handleKeyboardKeyClick, themeValues, styles }) => {
   const [isActive, setIsActive] = useState(false);
 
   const handleActive = () => {
