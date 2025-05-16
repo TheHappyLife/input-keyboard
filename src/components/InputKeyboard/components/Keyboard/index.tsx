@@ -198,6 +198,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
             style={{
               ...KEYBOARD_TOOLBAR,
               flex: toolbarFullHeight ? 1 : "unset",
+              overflowY: "auto",
               ...styles?.toolbar,
             }}
           >
