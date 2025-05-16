@@ -5,89 +5,85 @@ import { KeyboardRef, KeyboardValuesType } from "./components/Keyboard/type";
 import { InputRef } from "./components/Input/type";
 import { InputKeyboardProps, InputKeyboardRef, THEME } from "./type";
 
-const InputKeyboard = forwardRef<InputKeyboardRef, InputKeyboardProps>((props: InputKeyboardProps, ref) => {
-  const { keyboardProps, inputProps, alwaysOpen, openInit, onChange, value, theme = THEME.LIGHT } = props;
-  const { theme: keyboardTheme, ...keyboardRest } = keyboardProps || {};
-  const { onFocus, onBlur, theme: inputTheme, ...inputRest } = inputProps || {};
+const InputKeyboard = forwardRef<InputKeyboardRef, InputKeyboardProps>(
+  (props: InputKeyboardProps, ref) => {
+    const {
+      keyboardProps,
+      inputProps,
+      alwaysOpen,
+      openInit,
+      onChange,
+      value = "",
+      theme = THEME.LIGHT,
+    } = props;
+    const { theme: keyboardTheme, styles: keyboardStyles, ...keyboardRest } = keyboardProps || {};
+    const {
+      onFocus,
+      onBlur,
+      theme: inputTheme,
+      styles: inputStyles,
+      ...inputRest
+    } = inputProps || {};
 
-  const inputKeyboardRef = useRef<HTMLDivElement>(null);
-  const keyboardRef = useRef<KeyboardRef>(null);
-  const inputRef = useRef<InputRef>(null);
+    // const inputKeyboardRef = useRef<HTMLDivElement>(null);
+    const keyboardRef = useRef<KeyboardRef>(null);
+    const inputRef = useRef<InputRef>(null);
 
-  const [_displayValue, _setDisplayValue] = useState<ReactNode[]>([]);
-  const [_value, _setValue] = useState<string>("");
+    const [_displayValue, _setDisplayValue] = useState<ReactNode[]>([]);
 
-  const _onFocus = () => {
-    keyboardRef.current?.open();
-    inputRef.current?.focus();
-  };
-
-  const _onBlur = () => {
-    keyboardRef.current?.close();
-    inputRef.current?.blur();
-  };
-
-  const _onFocusInput = () => {
-    keyboardRef.current?.open();
-    onFocus?.();
-  };
-
-  const _onChange = (values: KeyboardValuesType) => {
-    _setDisplayValue(values.displayValue);
-    _setValue(values.value);
-    onChange?.(values);
-  };
-
-  const _setValueToKeyboard = (value?: string) => {
-    keyboardRef.current?.setValue(value || "");
-  };
-
-  useImperativeHandle(ref, () => ({
-    focus: _onFocus,
-    blur: _onBlur,
-  }));
-
-  useEffect(() => {
-    if (openInit || alwaysOpen) {
-      _onFocus();
-    }
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (alwaysOpen) return;
-      if (inputKeyboardRef.current && !inputKeyboardRef.current.contains(event.target as Node)) {
-        _onBlur();
-      }
+    const _focus = () => {
+      inputRef.current?.focus();
+      onFocus?.();
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+    const _blur = () => {
+      inputRef.current?.blur();
+      onBlur?.();
     };
-  }, [alwaysOpen]);
 
-  useEffect(() => {
-    //tracking value changed from parent
-    _setValueToKeyboard(value);
-  }, [value]);
+    const _onChange = (values: KeyboardValuesType) => {
+      _setDisplayValue(values.displayValue);
+      onChange?.(values);
+    };
 
-  return (
-    <div ref={inputKeyboardRef}>
-      <Input
-        ref={inputRef}
-        displayValue={_displayValue}
-        value={_value}
-        onFocus={_onFocusInput}
-        onBlur={onBlur}
-        theme={inputTheme ?? theme}
-        {...inputRest}
+    const _setValueToKeyboard = (value?: string) => {
+      keyboardRef.current?.setValue(value || "");
+    };
+
+    useImperativeHandle(ref, () => ({
+      focus: _focus,
+      blur: _blur,
+    }));
+
+    useEffect(() => {
+      //tracking value changed from parent
+      _setValueToKeyboard(value);
+    }, [value]);
+
+    return (
+      <Keyboard
+        alwaysOpen={alwaysOpen}
+        openInit={openInit}
+        onClose={_blur}
+        onOpen={_focus}
+        trigger={
+          <Input
+            ref={inputRef}
+            displayValue={_displayValue}
+            theme={inputTheme ?? theme}
+            styles={inputStyles}
+            {...inputRest}
+          />
+        }
+        ref={keyboardRef}
+        onChange={_onChange}
+        theme={keyboardTheme ?? theme}
+        styles={keyboardStyles}
+        {...keyboardRest}
       />
-      <Keyboard ref={keyboardRef} onChange={_onChange} theme={keyboardTheme ?? theme} {...keyboardRest} />
-    </div>
-  );
-});
+    );
+  }
+);
 
 InputKeyboard.displayName = "InputKeyboard";
 

@@ -143,7 +143,7 @@ The component comes with predefined styles that can be overridden:
 ## Usage Example
 
 ```tsx
-import { Input } from './components/InputKeyboard';
+import { Input } from 'tek-keyboard';
 
 // Basic usage
 <Input
@@ -313,7 +313,7 @@ enum KeyboardType {
 ## Usage Example
 
 ```tsx
-import { Keyboard } from './components/InputKeyboard';
+import { Keyboard, KeyboardType, DisplayType } from 'tek-keyboard';
 
 // Basic usage
 <Keyboard
@@ -412,7 +412,7 @@ inputKeyboardRef.current?.blur();
 ## Usage Example
 
 ```tsx
-import { InputKeyboard } from './components/InputKeyboard';
+import { InputKeyboard, KeyboardType, DisplayType } from 'tek-keyboard';
 
 // Basic usage
 <InputKeyboard

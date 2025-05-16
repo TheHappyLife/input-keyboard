@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { TheKeyProps } from "../type";
-import { KEY_NORMAL_STYLE, SUB_LABEL_STYLE } from "../const";
-const TheKey = ({ keyboard, handleKeyboardKeyClick, themeValues }: TheKeyProps) => {
+import { KEY_NORMAL_STYLE, SUB_LABEL_STYLE } from "./const";
+
+const TheKey: React.FC<TheKeyProps> = ({
+  keyboard,
+  handleKeyboardKeyClick,
+  themeValues,
+  styles,
+}) => {
   const [isActive, setIsActive] = useState(false);
 
   const handleActive = () => {
@@ -12,22 +18,36 @@ const TheKey = ({ keyboard, handleKeyboardKeyClick, themeValues }: TheKeyProps) 
     setIsActive(false);
   };
 
+  const buttonStyle = {
+    ...KEY_NORMAL_STYLE,
+    backgroundColor: isActive ? themeValues.keyActiveBackground : themeValues.keyBackground,
+    boxShadow: themeValues.keyShadow,
+    transition: "background-color 0.1s ease",
+    ...styles?.key,
+    ...(isActive && styles?.keyActive),
+  };
+
+  const labelStyle = {
+    color: themeValues.color,
+  };
+
+  const subLabelStyle = {
+    ...SUB_LABEL_STYLE,
+  };
+
   return (
     <button
-      style={{
-        ...KEY_NORMAL_STYLE,
-        backgroundColor: themeValues.keyBackground,
-        boxShadow: themeValues.keyShadow,
-        ...(isActive ? { backgroundColor: themeValues.keyActiveBackground } : {}),
-      }}
+      type="button"
+      aria-label={String(keyboard.label)}
+      style={buttonStyle}
       onClick={() => handleKeyboardKeyClick(keyboard)}
       onMouseDown={handleActive}
       onMouseUp={handleInactive}
       onTouchStart={handleActive}
       onTouchEnd={handleInactive}
     >
-      <span style={{ color: themeValues.color }}>{keyboard.label}</span>
-      {!!keyboard.subLabel && <span style={{ ...SUB_LABEL_STYLE }}>{keyboard.subLabel}</span>}
+      <span style={labelStyle}>{keyboard.label}</span>
+      {keyboard.subLabel && <span style={subLabelStyle}>{keyboard.subLabel}</span>}
     </button>
   );
 };

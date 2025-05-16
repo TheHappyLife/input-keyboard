@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { CSSProperties, ReactNode } from "react";
 import { THEME } from "../../type";
 
 export interface KeyboardThemeValues {
@@ -34,27 +34,48 @@ export interface KeyboardValuesType {
 
 export type KeyboardDisplayValue = ReactNode;
 
+export interface KeyboardStyleProps {
+  container?: CSSProperties;
+  toolbar?: CSSProperties;
+  keyboardContainer?: CSSProperties;
+  key?: CSSProperties;
+  keyHover?: CSSProperties;
+  keyActive?: CSSProperties;
+  trigger?: CSSProperties;
+}
+
 export interface KeyboardProps {
-  toolbar?: ReactNode;
   keyboardType?: KeyboardType;
   displayType?: DisplayType;
-  onChange?: (values: KeyboardValuesType) => void;
-  replaceElement?: ReactNode; // Only used if displayType is Replace
-  openInit?: boolean;
-  onOpen?: () => void;
-  onClose?: () => void;
+  replaceElement?: string;
   theme?: THEME;
   themeValuesOverride?: KeyboardThemeValues;
+  onOpen?: (height?: number) => void;
+  onClose?: () => void;
+  onChange?: (values: KeyboardValuesType) => void;
+  toolbar?: React.ReactNode;
+  initialValue?: string;
+  alwaysOpen?: boolean;
+  trigger?: React.ReactNode;
+  openInit?: boolean;
+  styles?: KeyboardStyleProps;
+  outFocusOnClickToolbar?: boolean;
+  toolbarFullHeight?: boolean; // if true, the toolbar will be full remain height of the screen after minus the height of the keyboard
 }
 
 export interface KeyboardRef {
   open: () => void;
   close: () => void;
   setValue: (value: string) => void;
+  getKeyboardHeight?: () => number | undefined;
 }
 
 export interface TheKeyProps {
   keyboard: KeyboardKey;
   handleKeyboardKeyClick: (keyboard: KeyboardKey) => void;
   themeValues: KeyboardThemeValues;
+  styles?: {
+    key?: CSSProperties;
+    keyActive?: CSSProperties;
+  };
 }

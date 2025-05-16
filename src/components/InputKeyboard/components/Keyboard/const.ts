@@ -28,6 +28,8 @@ export const KEYBOARD_SECTION_STYLE: CSSProperties = {
   zIndex: 9999,
   display: "flex",
   flexDirection: "column",
+  maxHeight: "100dvh",
+  maxWidth: "100vw",
 };
 
 export const KEYBOARD_TOOLBAR: CSSProperties = {};
@@ -59,28 +61,9 @@ export const KEYBOARD_KEYS: Partial<Record<KeyboardType, KeyboardKey[]>> = {
   ],
 };
 
-export const KEYBOARDS_CONTAINER_STYLE: CSSProperties = {
+export const BOARD_OF_KEYS_CONTAINER: CSSProperties = {
   display: "grid",
-  gridTemplateColumns: "repeat(10, 1fr)",
   gap: "0.44rem",
   padding: "0.44rem 0.44rem 3rem",
   backdropFilter: "blur(35px)",
-};
-
-export const KEY_NORMAL_STYLE: CSSProperties = {
-  width: "100%",
-  aspectRatio: "2.6071428571",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-  borderRadius: "0.3125rem",
-  color: "inherit",
-  fontSize: "1.5rem",
-};
-
-export const SUB_LABEL_STYLE: CSSProperties = {
-  fontSize: "0.4em",
-  color: "inherit",
-  fontWeight: 700,
 };

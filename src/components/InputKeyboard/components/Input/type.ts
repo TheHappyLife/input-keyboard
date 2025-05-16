@@ -10,10 +10,7 @@ export interface InputProps {
   themeValuesOverride?: InputThemeValues;
   leftElement?: ReactNode;
   rightElement?: ReactNode;
-  inputStyle?: CSSProperties;
-  textStyle?: CSSProperties;
-  placeholderStyle?: CSSProperties;
-  containerStyle?: CSSProperties;
+  styles?: InputStyleProps;
 }
 
 export interface InputRef {
@@ -26,4 +23,11 @@ export interface InputThemeValues {
   border?: string;
   placeholderColor?: string;
   backgroundColor?: string;
+}
+
+export interface InputStyleProps {
+  container?: CSSProperties;
+  input?: CSSProperties;
+  text?: CSSProperties;
+  placeholder?: CSSProperties;
 }

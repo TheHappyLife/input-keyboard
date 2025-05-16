@@ -1,11 +1,23 @@
+// Main component exports
 export { InputKeyboard } from "./components/InputKeyboard";
-export type { InputKeyboardProps, InputKeyboardRef } from "./components/InputKeyboard/type";
+export { Input } from "./components/InputKeyboard/components/Input";
+export { Keyboard } from "./components/InputKeyboard/components/Keyboard";
+
+// Theme exports
 export { THEME } from "./components/InputKeyboard/type";
 
-export { Input } from "./components/InputKeyboard/components/Input";
-export type { InputProps, InputRef, InputThemeValues } from "./components/InputKeyboard/components/Input/type";
+// InputKeyboard types
+export type { InputKeyboardProps, InputKeyboardRef } from "./components/InputKeyboard/type";
 
-export { Keyboard } from "./components/InputKeyboard/components/Keyboard";
+// Input component types
+export type {
+  InputProps,
+  InputRef,
+  InputThemeValues,
+  InputStyleProps,
+} from "./components/InputKeyboard/components/Input/type";
+
+// Keyboard component types
 export type {
   KeyboardProps,
   KeyboardRef,
@@ -14,5 +26,8 @@ export type {
   KeyboardValuesType,
   KeyboardDisplayValue,
   TheKeyProps,
+  KeyboardStyleProps,
 } from "./components/InputKeyboard/components/Keyboard/type";
+
+// Keyboard enums
 export { DisplayType, KeyboardType } from "./components/InputKeyboard/components/Keyboard/type";

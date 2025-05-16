@@ -1,4 +1,13 @@
-import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   DisplayType,
   KeyboardType,
@@ -13,7 +22,7 @@ import {
   NUM_OF_COLUMNS,
   KEYBOARD_THEME,
   KEYBOARD_KEYS,
-  KEYBOARDS_CONTAINER_STYLE,
+  BOARD_OF_KEYS_CONTAINER,
   KEYBOARD_SECTION_STYLE,
   KEYBOARD_TOOLBAR,
   DELETE_KEY_VALUE,
@@ -22,40 +31,67 @@ import TheKey from "./components/TheKey";
 import { THEME } from "../../type";
 
 const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
+  const {
+    keyboardType = KeyboardType.Decimal,
+    displayType = DisplayType.Text,
+    replaceElement = "•",
+    theme = THEME.LIGHT,
+    themeValuesOverride,
+    onOpen,
+    onClose,
+    onChange,
+    toolbar,
+    initialValue = "",
+    styles,
+    outFocusOnClickToolbar = true,
+    toolbarFullHeight = false,
+  } = props;
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const keyboardRef = useRef<HTMLDivElement>(null);
+  const toolbarRef = useRef<HTMLDivElement>(null);
   const keyboardsSectionRef = useRef<HTMLDivElement>(null);
-  const valueRef = useRef("");
+  const { alwaysOpen, trigger, openInit } = props;
+  const valueRef = useRef(initialValue);
   const displayValueRef = useRef<KeyboardDisplayValue[]>([]);
-  const keyboardType = useMemo(() => props.keyboardType ?? KeyboardType.Decimal, [props.keyboardType]);
-  const displayType = useMemo(() => props.displayType ?? DisplayType.Text, [props.displayType]);
-  const replaceElement = useMemo(() => props.replaceElement ?? "*", [props.replaceElement]);
   const numOfRows = useMemo(() => NUM_OF_ROWS[keyboardType] ?? 4, [keyboardType]);
   const numOfColumns = useMemo(() => NUM_OF_COLUMNS[keyboardType] ?? 3, [keyboardType]);
-  const theme = useMemo(() => props.theme ?? THEME.LIGHT, [props.theme]);
   const themeValues = useMemo(
-    () => props.themeValuesOverride ?? KEYBOARD_THEME[theme],
-    [theme, props.themeValuesOverride]
+    () => themeValuesOverride ?? KEYBOARD_THEME[theme],
+    [theme, themeValuesOverride]
   );
   const keyboardKeys = useMemo(
     () => KEYBOARD_KEYS[keyboardType] ?? KEYBOARD_KEYS[KeyboardType.Decimal],
     [keyboardType]
   );
-  const [isOpen, setIsOpen] = useState(!!props.openInit);
+  const [isOpen, setIsOpen] = useState(openInit);
+
+  const isOpened = useMemo(() => {
+    return isOpen || alwaysOpen;
+  }, [isOpen, alwaysOpen]);
 
   const open = () => {
     setIsOpen(true);
-    props.onOpen?.();
+    const height = keyboardsSectionRef.current?.clientHeight;
+    onOpen?.(height);
   };
 
   const close = () => {
     setIsOpen(false);
-    props.onClose?.();
+    onClose?.();
   };
+
+  useLayoutEffect(() => {
+    if (openInit || alwaysOpen) {
+      open();
+    }
+  }, [openInit, alwaysOpen]);
 
   const updateValue = useCallback((inputValue: string) => {
     const { displayValue, value } = getKeyboardValues(inputValue);
+    if (value === valueRef.current) return;
     valueRef.current = value;
     displayValueRef.current = [displayValue];
-    props.onChange?.({
+    onChange?.({
       displayValue: displayValue,
       value: value,
     });
@@ -65,10 +101,15 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     updateValue(value);
   };
 
+  const getKeyboardHeight = () => {
+    return keyboardsSectionRef.current?.clientHeight;
+  };
+
   useImperativeHandle(ref, () => ({
     open: open,
     close: close,
     setValue,
+    getKeyboardHeight,
   }));
 
   const getKeyboardValues = useCallback(
@@ -105,49 +146,93 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   );
 
   useEffect(() => {
-    if (isOpen) return;
+    if (isOpened) return;
     if (keyboardsSectionRef.current) {
       const body = document.querySelector("body");
 
       body?.appendChild(keyboardsSectionRef.current);
     }
-  }, [isOpen]);
+  }, [isOpened]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (alwaysOpen) return;
+      const isClickOnTrigger = triggerRef.current?.contains(event.target as Node);
+      const isClickOnKeyboard = keyboardRef.current?.contains(event.target as Node);
+      const isClickOnToolbar = toolbarRef.current?.contains(event.target as Node);
+      if (isClickOnTrigger || isClickOnKeyboard) {
+        return;
+      }
+      if (isClickOnToolbar && !outFocusOnClickToolbar) {
+        return;
+      }
+      setTimeout(() => {
+        close();
+      }, 200);
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [alwaysOpen]);
 
   return (
-    <>
-      {isOpen && (
-        <div
-          ref={keyboardsSectionRef}
-          style={{
-            ...KEYBOARD_SECTION_STYLE,
-          }}
-        >
-          {
-            <>
-              <div style={{ ...KEYBOARD_TOOLBAR }}>{props.toolbar}</div>
-              <div
-                style={{
-                  ...KEYBOARDS_CONTAINER_STYLE,
-                  gridTemplateColumns: `repeat(${numOfColumns}, 1fr)`,
-                  gridTemplateRows: `repeat(${numOfRows}, 1fr)`,
-                  backgroundColor: themeValues.backgroundColor,
-                  color: themeValues.color,
-                }}
-              >
-                {keyboardKeys!.map((keyboard, index) => (
-                  <TheKey
-                    key={index}
-                    keyboard={keyboard}
-                    handleKeyboardKeyClick={handleKeyboardKeyClick}
-                    themeValues={themeValues}
-                  />
-                ))}
-              </div>
-            </>
-          }
+    <div style={{ ...styles?.container }}>
+      {trigger && (
+        <div onClick={open} ref={triggerRef} style={styles?.trigger}>
+          {trigger}
         </div>
       )}
-    </>
+
+      <div
+        ref={keyboardsSectionRef}
+        style={{
+          ...KEYBOARD_SECTION_STYLE,
+          height: toolbarFullHeight ? "100dvh" : "fit-content",
+          ...styles?.keyboardContainer,
+          visibility: isOpened ? "visible" : "hidden",
+        }}
+      >
+        {!!toolbar && (
+          <div
+            ref={toolbarRef}
+            style={{
+              ...KEYBOARD_TOOLBAR,
+              flex: toolbarFullHeight ? 1 : "unset",
+              ...styles?.toolbar,
+            }}
+          >
+            {toolbar}
+          </div>
+        )}
+        <div
+          ref={keyboardRef}
+          style={{
+            ...BOARD_OF_KEYS_CONTAINER,
+            gridTemplateColumns: `repeat(${numOfColumns}, 1fr)`,
+            gridTemplateRows: `repeat(${numOfRows}, 1fr)`,
+            backgroundColor: themeValues.backgroundColor,
+            color: themeValues.color,
+            ...styles?.keyboardContainer,
+          }}
+        >
+          {keyboardKeys!.map((keyboard, index) => (
+            <TheKey
+              key={index}
+              keyboard={keyboard}
+              handleKeyboardKeyClick={handleKeyboardKeyClick}
+              themeValues={themeValues}
+              styles={{
+                key: styles?.key,
+                keyActive: styles?.keyActive,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
   );
 });
 

@@ -43,27 +43,27 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
 
   return (
     <div
+      onClick={focus}
       style={{
         ...INPUT_CONTAINER_STYLE,
         color: themeValues.color,
         border: themeValues.border,
         backgroundColor: themeValues.backgroundColor,
-        ...props.containerStyle,
+        ...props.styles?.container,
       }}
     >
       {props.leftElement}
       <div
-        onClick={focus}
         style={{
           ...INPUT_STYLE,
-          ...props.inputStyle,
+          ...props.styles?.input,
         }}
       >
         {(!isEmpty || isFocused) && (
           <div
             style={{
               ...INPUT_TEXT_CONTAINER_STYLE,
-              ...props.textStyle,
+              ...props.styles?.text,
             }}
           >
             {isEmpty && BUFFER_ELEMENT}
@@ -78,7 +78,7 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
                 style={{
                   ...INPUT_PLACEHOLDER_STYLE,
                   color: themeValues.placeholderColor,
-                  ...props.placeholderStyle,
+                  ...props.styles?.placeholder,
                 }}
               >
                 {placeholder}

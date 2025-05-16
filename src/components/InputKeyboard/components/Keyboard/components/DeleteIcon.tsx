@@ -12,7 +12,6 @@ const DeleteIcon: React.FC<DeleteIconProps> = ({ width = 32, height = 32, fillCo
   const [fillColorFromParent, setFillColorFromParent] = useState<string>();
   useEffect(() => {
     const parentColor = svgRef.current?.parentElement?.style.color || "#000";
-    console.warn("🚀 ~ useEffect ~ parentColor:", parentColor);
     setFillColorFromParent(parentColor);
   }, []);
 
