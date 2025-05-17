@@ -12,6 +12,8 @@ export interface InputProps {
   rightElement?: ReactNode;
   styles?: InputStyleProps;
   elementsAcceptIds?: string[];
+  autoFocus?: boolean;
+  alwaysFocus?: boolean;
 }
 
 export interface InputRef {

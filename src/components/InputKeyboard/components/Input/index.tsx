@@ -1,4 +1,12 @@
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { InputProps, InputRef } from "./type";
 import Cursor from "./Components/Cusor";
 import {
@@ -27,11 +35,16 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
     styles,
     leftElement,
     rightElement,
+    autoFocus,
+    alwaysFocus,
     ...rest
   } = props;
   const isEmpty = !displayValue || displayValue.length === 0;
 
-  const themeValues = useMemo(() => themeValuesOverride ?? INPUT_THEME[theme], [theme, themeValuesOverride]);
+  const themeValues = useMemo(
+    () => themeValuesOverride ?? INPUT_THEME[theme],
+    [theme, themeValuesOverride]
+  );
 
   const focus = () => {
     setTimeout(() => {
@@ -40,10 +53,17 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
     }, 100);
   };
 
-  const blur = () => {
+  const blur = useCallback(() => {
+    if (alwaysFocus) return;
     onBlur?.();
     setIsFocused(false);
-  };
+  }, [alwaysFocus]);
+
+  useEffect(() => {
+    if (autoFocus || alwaysFocus) {
+      focus();
+    }
+  }, [autoFocus, alwaysFocus]);
 
   useImperativeHandle(ref, () => ({
     focus,

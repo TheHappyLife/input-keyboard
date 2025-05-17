@@ -58,7 +58,10 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const displayValueRef = useRef<KeyboardDisplayValue[]>([]);
   const numOfRows = useMemo(() => NUM_OF_ROWS[keyboardType] ?? 4, [keyboardType]);
   const numOfColumns = useMemo(() => NUM_OF_COLUMNS[keyboardType] ?? 3, [keyboardType]);
-  const themeValues = useMemo(() => themeValuesOverride ?? KEYBOARD_THEME[theme], [theme, themeValuesOverride]);
+  const themeValues = useMemo(
+    () => themeValuesOverride ?? KEYBOARD_THEME[theme],
+    [theme, themeValuesOverride]
+  );
   const keyboardKeys = useMemo(
     () => KEYBOARD_KEYS[keyboardType] ?? KEYBOARD_KEYS[KeyboardType.Decimal],
     [keyboardType]
