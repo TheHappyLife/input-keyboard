@@ -166,7 +166,9 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
       if (isClickOnToolbar && !outFocusOnClickToolbar) {
         return;
       }
-      close();
+      setTimeout(() => {
+        close();
+      }, 100);
     };
 
     document.addEventListener("mousedown", handleClickOutside);
