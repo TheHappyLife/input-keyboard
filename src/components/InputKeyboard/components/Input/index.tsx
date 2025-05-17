@@ -31,10 +31,7 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
   } = props;
   const isEmpty = !displayValue || displayValue.length === 0;
 
-  const themeValues = useMemo(
-    () => themeValuesOverride ?? INPUT_THEME[theme],
-    [theme, themeValuesOverride]
-  );
+  const themeValues = useMemo(() => themeValuesOverride ?? INPUT_THEME[theme], [theme, themeValuesOverride]);
 
   const focus = () => {
     setTimeout(() => {
