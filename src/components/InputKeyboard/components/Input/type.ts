@@ -11,6 +11,7 @@ export interface InputProps {
   leftElement?: ReactNode;
   rightElement?: ReactNode;
   styles?: InputStyleProps;
+  elementsAcceptIds?: string[];
 }
 
 export interface InputRef {

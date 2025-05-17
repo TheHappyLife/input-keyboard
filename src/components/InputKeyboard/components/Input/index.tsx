@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useMemo, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { InputProps, InputRef } from "./type";
 import Cursor from "./Components/Cusor";
 import {
@@ -15,24 +15,36 @@ const BUFFER_ELEMENT = <span style={{ opacity: 0 }}>i</span>;
 
 const Input = forwardRef<InputRef, InputProps>((props, ref) => {
   const [isFocused, setIsFocused] = useState(false);
-
-  const displayValue = props.displayValue;
-  const placeholder = props.placeholder;
+  const inputRef = useRef<HTMLDivElement>(null);
+  const {
+    displayValue,
+    placeholder,
+    elementsAcceptIds,
+    theme = THEME.LIGHT,
+    themeValuesOverride,
+    onFocus,
+    onBlur,
+    styles,
+    leftElement,
+    rightElement,
+    ...rest
+  } = props;
   const isEmpty = !displayValue || displayValue.length === 0;
 
-  const theme = useMemo(() => props.theme ?? THEME.LIGHT, [props.theme]);
   const themeValues = useMemo(
-    () => props.themeValuesOverride ?? INPUT_THEME[theme],
-    [theme, props.themeValuesOverride]
+    () => themeValuesOverride ?? INPUT_THEME[theme],
+    [theme, themeValuesOverride]
   );
 
   const focus = () => {
-    props.onFocus?.();
-    setIsFocused(true);
+    setTimeout(() => {
+      onFocus?.();
+      setIsFocused(true);
+    }, 100);
   };
 
   const blur = () => {
-    props.onBlur?.();
+    onBlur?.();
     setIsFocused(false);
   };
 
@@ -41,29 +53,52 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
     blur,
   }));
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const isClickOnInput = inputRef.current?.contains(event.target as Node);
+      const isClickOnAcceptedElements = elementsAcceptIds?.some((elementId) =>
+        document.getElementById(elementId)?.contains(event.target as Node)
+      );
+      if (isClickOnInput || isClickOnAcceptedElements) {
+        return;
+      }
+      setTimeout(() => {
+        blur();
+      }, 100);
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div
+      {...rest}
+      ref={inputRef}
       onClick={focus}
       style={{
         ...INPUT_CONTAINER_STYLE,
         color: themeValues.color,
         border: themeValues.border,
         backgroundColor: themeValues.backgroundColor,
-        ...props.styles?.container,
+        ...styles?.container,
       }}
     >
-      {props.leftElement}
+      {leftElement}
       <div
         style={{
           ...INPUT_STYLE,
-          ...props.styles?.input,
+          ...styles?.input,
         }}
       >
         {(!isEmpty || isFocused) && (
           <div
             style={{
               ...INPUT_TEXT_CONTAINER_STYLE,
-              ...props.styles?.text,
+              ...styles?.text,
             }}
           >
             {isEmpty && BUFFER_ELEMENT}
@@ -78,7 +113,7 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
                 style={{
                   ...INPUT_PLACEHOLDER_STYLE,
                   color: themeValues.placeholderColor,
-                  ...props.styles?.placeholder,
+                  ...styles?.placeholder,
                 }}
               >
                 {placeholder}
@@ -88,7 +123,7 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
           </span>
         )}
       </div>
-      {props.rightElement}
+      {rightElement}
     </div>
   );
 });

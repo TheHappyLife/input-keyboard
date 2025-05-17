@@ -45,6 +45,9 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     styles,
     outFocusOnClickToolbar = true,
     toolbarFullHeight = false,
+    keyboardId,
+    toolbarId,
+    ...rest
   } = props;
   const triggerRef = useRef<HTMLDivElement>(null);
   const keyboardRef = useRef<HTMLDivElement>(null);
@@ -55,7 +58,10 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const displayValueRef = useRef<KeyboardDisplayValue[]>([]);
   const numOfRows = useMemo(() => NUM_OF_ROWS[keyboardType] ?? 4, [keyboardType]);
   const numOfColumns = useMemo(() => NUM_OF_COLUMNS[keyboardType] ?? 3, [keyboardType]);
-  const themeValues = useMemo(() => themeValuesOverride ?? KEYBOARD_THEME[theme], [theme, themeValuesOverride]);
+  const themeValues = useMemo(
+    () => themeValuesOverride ?? KEYBOARD_THEME[theme],
+    [theme, themeValuesOverride]
+  );
   const keyboardKeys = useMemo(
     () => KEYBOARD_KEYS[keyboardType] ?? KEYBOARD_KEYS[KeyboardType.Decimal],
     [keyboardType]
@@ -163,9 +169,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
       if (isClickOnToolbar && !outFocusOnClickToolbar) {
         return;
       }
-      setTimeout(() => {
-        close();
-      }, 200);
+      close();
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -176,7 +180,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   }, [alwaysOpen]);
 
   return (
-    <div style={{ ...styles?.container }}>
+    <div style={{ ...styles?.container }} {...rest}>
       {trigger && (
         <div onClick={open} ref={triggerRef} style={styles?.trigger}>
           {trigger}
@@ -194,6 +198,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
       >
         {!!toolbar && (
           <div
+            id={toolbarId}
             ref={toolbarRef}
             style={{
               ...KEYBOARD_TOOLBAR,
@@ -206,6 +211,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
           </div>
         )}
         <div
+          id={keyboardId}
           ref={keyboardRef}
           style={{
             ...BOARD_OF_KEYS_CONTAINER,
