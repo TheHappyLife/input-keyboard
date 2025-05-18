@@ -63,6 +63,7 @@ export interface KeyboardProps {
   toolbarFullHeight?: boolean; // if true, the toolbar will be full remain height of the screen after minus the height of the keyboard
   keyboardId?: string;
   toolbarId?: string;
+  hideKeyboard?: boolean;
 }
 
 export interface KeyboardRef {

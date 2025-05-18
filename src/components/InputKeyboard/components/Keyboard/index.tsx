@@ -47,6 +47,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     toolbarFullHeight = false,
     keyboardId,
     toolbarId,
+    hideKeyboard = false,
     ...rest
   } = props;
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -58,7 +59,10 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const displayValueRef = useRef<KeyboardDisplayValue[]>([]);
   const numOfRows = useMemo(() => NUM_OF_ROWS[keyboardType] ?? 4, [keyboardType]);
   const numOfColumns = useMemo(() => NUM_OF_COLUMNS[keyboardType] ?? 3, [keyboardType]);
-  const themeValues = useMemo(() => themeValuesOverride ?? KEYBOARD_THEME[theme], [theme, themeValuesOverride]);
+  const themeValues = useMemo(
+    () => themeValuesOverride ?? KEYBOARD_THEME[theme],
+    [theme, themeValuesOverride]
+  );
   const keyboardKeys = useMemo(
     () => KEYBOARD_KEYS[keyboardType] ?? KEYBOARD_KEYS[KeyboardType.Decimal],
     [keyboardType]
@@ -209,31 +213,33 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
             {toolbar}
           </div>
         )}
-        <div
-          id={keyboardId}
-          ref={keyboardRef}
-          style={{
-            ...BOARD_OF_KEYS_CONTAINER,
-            gridTemplateColumns: `repeat(${numOfColumns}, 1fr)`,
-            gridTemplateRows: `repeat(${numOfRows}, 1fr)`,
-            backgroundColor: themeValues.backgroundColor,
-            color: themeValues.color,
-            ...styles?.keyboardContainer,
-          }}
-        >
-          {keyboardKeys!.map((keyboard, index) => (
-            <TheKey
-              key={index}
-              keyboard={keyboard}
-              handleKeyboardKeyClick={handleKeyboardKeyClick}
-              themeValues={themeValues}
-              styles={{
-                key: styles?.key,
-                keyActive: styles?.keyActive,
-              }}
-            />
-          ))}
-        </div>
+        {!hideKeyboard && (
+          <div
+            id={keyboardId}
+            ref={keyboardRef}
+            style={{
+              ...BOARD_OF_KEYS_CONTAINER,
+              gridTemplateColumns: `repeat(${numOfColumns}, 1fr)`,
+              gridTemplateRows: `repeat(${numOfRows}, 1fr)`,
+              backgroundColor: themeValues.backgroundColor,
+              color: themeValues.color,
+              ...styles?.keyboardContainer,
+            }}
+          >
+            {keyboardKeys!.map((keyboard, index) => (
+              <TheKey
+                key={index}
+                keyboard={keyboard}
+                handleKeyboardKeyClick={handleKeyboardKeyClick}
+                themeValues={themeValues}
+                styles={{
+                  key: styles?.key,
+                  keyActive: styles?.keyActive,
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
