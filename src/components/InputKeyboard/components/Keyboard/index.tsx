@@ -68,7 +68,6 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     if (openInit || alwaysOpen) {
       open();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openInit, alwaysOpen]);
 
   const updateValue = useCallback(
