@@ -46,8 +46,7 @@
     "typescript": "^5.8.3"
   },
   "files": [
-    "dist/**/*",
-    "dist/**/*.css"
+    "dist/**/*"
   ],
   "repository": {
     "type": "git",
