@@ -25,9 +25,7 @@ const TheKey: React.FC<TheKeyProps> = ({ keyboard, handleKeyboardKeyClick, class
       onTouchEnd={handleInactive}
     >
       <span className={clsx(classNames?.label)}>{keyboard.label}</span>
-      {keyboard.subLabel && (
-        <span className={clsx("sub-label", classNames?.subLabel)}>{keyboard.subLabel}</span>
-      )}
+      {keyboard.subLabel && <span className={clsx("sub-label", classNames?.subLabel)}>{keyboard.subLabel}</span>}
     </button>
   );
 };

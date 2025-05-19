@@ -8,6 +8,41 @@ This package provides three main components for creating a virtual keyboard inpu
 
 Each component can be used independently or together to create a complete virtual keyboard input system. Click on the component names above to jump to their detailed documentation.
 
+## Installation
+
+```bash
+npm install tek-keyboard
+```
+
+## Usage
+
+### Import CSS
+
+You can import the CSS in one of two ways:
+
+1. Direct CSS import:
+
+```typescript
+import "tek-keyboard/dist/components/InputKeyboard/input-keyboard.css";
+```
+
+2. Import through styles object:
+
+```typescript
+import { styles } from "tek-keyboard";
+```
+
+### Basic Usage
+
+```tsx
+import { InputKeyboard } from "tek-keyboard";
+import "tek-keyboard/dist/components/InputKeyboard/input-keyboard.css";
+
+function App() {
+  return <InputKeyboard placeholder="Enter text" theme="light" />;
+}
+```
+
 ## Input Component
 
 ### Overview
