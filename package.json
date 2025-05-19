@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rm -rf dist",
-    "copy-css": "cp -r src/**/*.css dist/",
+    "copy-css": "cp -r src/components/InputKeyboard/input-keyboard.css dist/",
     "build": "npm run format && tsc && npm run copy-css",
     "format": "prettier --write . && eslint --fix --ignore-pattern .next --ignore-pattern node_modules --ignore-pattern dist",
     "version:patch": "npm version patch",
