@@ -18,18 +18,10 @@ npm install tek-keyboard
 
 ### Import CSS
 
-You can import the CSS in one of two ways:
-
-1. Direct CSS import:
+You can import the CSS:
 
 ```typescript
 import "tek-keyboard/dist/components/InputKeyboard/input-keyboard.css";
-```
-
-2. Import through styles object:
-
-```typescript
-import { styles } from "tek-keyboard";
 ```
 
 ### Basic Usage
@@ -78,12 +70,15 @@ inputRef.current?.blur();
 
 ### Basic Props
 
-| Prop           | Type          | Description                               | Default       |
-| -------------- | ------------- | ----------------------------------------- | ------------- |
-| `displayValue` | `ReactNode[]` | Array of elements to display in the input | -             |
-| `value`        | `string`      | The actual value of the input             | -             |
-| `placeholder`  | `string`      | Placeholder text when input is empty      | -             |
-| `theme`        | `THEME`       | Theme of the input (LIGHT/DARK)           | `THEME.LIGHT` |
+| Prop             | Type          | Description                                                        | Default       |
+| ---------------- | ------------- | ------------------------------------------------------------------ | ------------- |
+| `value`          | `string`      | The current value of the input                                     | -             |
+| `placeholder`    | `string`      | Placeholder text when input is empty                               | -             |
+| `theme`          | `THEME`       | Theme of the input (LIGHT/DARK)                                    | `THEME.LIGHT` |
+| `autoFocus`      | `boolean`     | Whether to focus the input on mount                                | `false`       |
+| `alwaysFocus`    | `boolean`     | Whether to keep the input always focused                           | `false`       |
+| `displayType`    | `DisplayType` | How to display the input (Text/Number/Replace)                     | `Text`        |
+| `replaceElement` | `ReactNode`   | Element to use for replacement display when displayType is Replace | `"●"`         |
 
 ### Event Handlers
 
@@ -101,124 +96,32 @@ inputRef.current?.blur();
 
 ### Styling Props
 
-| Prop               | Type            | Description                           |
-| ------------------ | --------------- | ------------------------------------- |
-| `inputStyle`       | `CSSProperties` | Custom styles for the input container |
-| `textStyle`        | `CSSProperties` | Custom styles for the input text      |
-| `placeholderStyle` | `CSSProperties` | Custom styles for the placeholder     |
-| `containerStyle`   | `CSSProperties` | Custom styles for the main container  |
+| Prop         | Type              | Description                          |
+| ------------ | ----------------- | ------------------------------------ |
+| `styles`     | `InputStyleProps` | Custom styles for different elements |
+| `classNames` | `InputClassNames` | Custom class names for elements      |
 
-### Theme Customization
-
-| Prop                  | Type               | Description                   |
-| --------------------- | ------------------ | ----------------------------- |
-| `themeValuesOverride` | `InputThemeValues` | Override default theme values |
-
-### InputThemeValues Interface
+### InputStyleProps Interface
 
 ```typescript
-interface InputThemeValues {
-  color?: string; // Text color
-  border?: string; // Border style
-  placeholderColor?: string; // Placeholder text color
-  backgroundColor?: string; // Background color
+interface InputStyleProps {
+  container?: CSSProperties; // Styles for the main container
+  input?: CSSProperties; // Styles for the input area
+  text?: CSSProperties; // Styles for the text content
+  placeholder?: CSSProperties; // Styles for the placeholder
 }
 ```
 
-## Default Styles
-
-The component comes with predefined styles that can be overridden:
-
-### Container Style
+### InputClassNames Interface
 
 ```typescript
-{
-  display: "flex",
-  alignItems: "center",
-  minWidth: "250px",
-  padding: "0.75rem 1rem",
-  borderRadius: "0.75rem"
+interface InputClassNames {
+  container?: string; // Class name for the main container
+  input?: string; // Class name for the input area
+  text?: string; // Class name for the text content
+  placeholder?: string; // Class name for the placeholder
 }
 ```
-
-### Input Style
-
-```typescript
-{
-  overflow: "hidden",
-  flexGrow: 1,
-  fontSize: "1rem"
-}
-```
-
-## Default Theme Values
-
-### Light Theme
-
-```typescript
-{
-  color: "#000",
-  border: "1px solid #333",
-  backgroundColor: "#fff",
-  placeholderColor: "#888"
-}
-```
-
-### Dark Theme
-
-```typescript
-{
-  color: "#ddd",
-  border: "1px solid #333",
-  backgroundColor: "#000",
-  placeholderColor: "#888"
-}
-```
-
-## Usage Example
-
-```tsx
-import { Input } from 'tek-keyboard';
-
-// Basic usage
-<Input
-  placeholder="Enter text"
-  theme="light"
-/>
-
-// With custom styling
-<Input
-  placeholder="Custom styled input"
-  inputStyle={{ fontSize: '1.2rem' }}
-  containerStyle={{ border: '2px solid blue' }}
-/>
-
-// With left and right elements
-<Input
-  placeholder="With icons"
-  leftElement={<IconLeft />}
-  rightElement={<IconRight />}
-/>
-
-// With custom theme values
-<Input
-  placeholder="Custom theme"
-  themeValuesOverride={{
-    color: '#ff0000',
-    backgroundColor: '#f0f0f0'
-  }}
-/>
-```
-
-## Features
-
-- Responsive design
-- Customizable themes (Light/Dark)
-- Support for left and right elements
-- Animated cursor
-- Customizable styling
-- Placeholder support
-- Focus/blur handling
 
 ## Keyboard Component
 
@@ -234,7 +137,7 @@ The Keyboard component exposes the following methods through `forwardRef`:
 interface KeyboardRef {
   open: () => void; // Open the keyboard
   close: () => void; // Close the keyboard
-  setValue: (value: string) => void; // Set the keyboard's value
+  getKeyboardHeight: () => number | undefined; // Get the keyboard height
 }
 ```
 
@@ -249,8 +152,8 @@ keyboardRef.current?.open();
 // Close the keyboard
 keyboardRef.current?.close();
 
-// Set keyboard value
-keyboardRef.current?.setValue("123");
+// Get keyboard height
+const height = keyboardRef.current?.getKeyboardHeight();
 
 <Keyboard ref={keyboardRef} />;
 ```
@@ -259,135 +162,63 @@ keyboardRef.current?.setValue("123");
 
 ### Basic Props
 
-| Prop             | Type           | Description                                                                                           | Default                |
-| ---------------- | -------------- | ----------------------------------------------------------------------------------------------------- | ---------------------- |
-| `keyboardType`   | `KeyboardType` | Type of keyboard (Decimal/Number)                                                                     | `KeyboardType.Decimal` |
-| `displayType`    | `DisplayType`  | How to display the input (Text/Number/Replace)                                                        | `DisplayType.Text`     |
-| `replaceElement` | `ReactNode`    | Element to use for replacement display. Only works when `displayType` is set to `DisplayType.Replace` | `"*"`                  |
-| `openInit`       | `boolean`      | Whether keyboard should be open initially                                                             | `false`                |
-| `theme`          | `THEME`        | Theme of the keyboard (LIGHT/DARK)                                                                    | `THEME.LIGHT`          |
+| Prop                     | Type           | Description                                       | Default                |
+| ------------------------ | -------------- | ------------------------------------------------- | ---------------------- |
+| `keyboardType`           | `KeyboardType` | Type of keyboard (Text/Number/Decimal)            | `KeyboardType.Decimal` |
+| `theme`                  | `THEME`        | Theme of the keyboard (LIGHT/DARK)                | `THEME.LIGHT`          |
+| `alwaysOpen`             | `boolean`      | Whether keyboard should always be visible         | `false`                |
+| `openInit`               | `boolean`      | Whether keyboard should be open initially         | `false`                |
+| `outFocusOnClickToolbar` | `boolean`      | Whether to close keyboard when clicking toolbar   | `true`                 |
+| `toolbarFullHeight`      | `boolean`      | Whether toolbar should take full remaining height | `false`                |
+| `value`                  | `string`       | Current value of the keyboard                     | -                      |
 
 ### Event Handlers
 
-| Prop       | Type                                   | Description                          |
-| ---------- | -------------------------------------- | ------------------------------------ |
-| `onChange` | `(values: KeyboardValuesType) => void` | Callback when keyboard value changes |
-| `onOpen`   | `() => void`                           | Callback when keyboard opens         |
-| `onClose`  | `() => void`                           | Callback when keyboard closes        |
+| Prop       | Type                        | Description                          |
+| ---------- | --------------------------- | ------------------------------------ |
+| `onChange` | `(value: string) => void`   | Callback when keyboard value changes |
+| `onOpen`   | `(height?: number) => void` | Callback when keyboard opens         |
+| `onClose`  | `() => void`                | Callback when keyboard closes        |
 
 ### Custom Elements
 
 | Prop      | Type        | Description                              |
 | --------- | ----------- | ---------------------------------------- |
 | `toolbar` | `ReactNode` | Custom toolbar to display above keyboard |
+| `trigger` | `ReactNode` | Element that triggers keyboard opening   |
 
-### Theme Customization
+### Styling Props
 
-| Prop                  | Type                  | Description                   |
-| --------------------- | --------------------- | ----------------------------- |
-| `themeValuesOverride` | `KeyboardThemeValues` | Override default theme values |
+| Prop         | Type                 | Description                          |
+| ------------ | -------------------- | ------------------------------------ |
+| `styles`     | `KeyboardStyleProps` | Custom styles for different elements |
+| `classNames` | `KeyboardClassNames` | Custom class names for elements      |
 
-### KeyboardValuesType Interface
+### KeyboardStyleProps Interface
 
 ```typescript
-interface KeyboardValuesType {
-  displayValue: ReactNode[]; // Array of elements to display
-  value: string; // Actual value
+interface KeyboardStyleProps {
+  container?: CSSProperties; // Styles for the main container
+  toolbar?: CSSProperties; // Styles for the toolbar
+  keyboardContainer?: CSSProperties; // Styles for the keyboard container
+  key?: CSSProperties; // Styles for individual keys
+  keyHover?: CSSProperties; // Styles for key hover state
+  keyActive?: CSSProperties; // Styles for key active state
+  trigger?: CSSProperties; // Styles for the trigger element
 }
 ```
 
-### DisplayType Enum
+### KeyboardClassNames Interface
 
 ```typescript
-enum DisplayType {
-  Text = "Text", // Display as plain text
-  Number = "Number", // Display as numbers
-  Replace = "Replace", // Display with replacement characters
+interface KeyboardClassNames {
+  container?: string; // Class name for the main container
+  toolbar?: string; // Class name for the toolbar
+  keyboardContainer?: string; // Class name for the keyboard container
+  trigger?: string; // Class name for the trigger element
+  theKey?: TheKeyClassNames; // Class names for individual keys
 }
 ```
-
-### KeyboardType Enum
-
-```typescript
-enum KeyboardType {
-  Decimal = "Decimal", // Decimal keyboard with decimal point
-  Number = "Number", // Numbers only keyboard
-}
-```
-
-## Default Theme Values
-
-### Light Theme
-
-```typescript
-{
-  backgroundColor: "#fff",
-  keyBackgroundColor: "#f0f0f0",
-  keyTextColor: "#000",
-  keyActiveBackgroundColor: "#e0e0e0",
-  keyActiveTextColor: "#000",
-  toolbarBackgroundColor: "#f8f8f8",
-  toolbarTextColor: "#000"
-}
-```
-
-### Dark Theme
-
-```typescript
-{
-  backgroundColor: "#1a1a1a",
-  keyBackgroundColor: "#2d2d2d",
-  keyTextColor: "#fff",
-  keyActiveBackgroundColor: "#3d3d3d",
-  keyActiveTextColor: "#fff",
-  toolbarBackgroundColor: "#2d2d2d",
-  toolbarTextColor: "#fff"
-}
-```
-
-## Usage Example
-
-```tsx
-import { Keyboard, KeyboardType, DisplayType } from 'tek-keyboard';
-
-// Basic usage
-<Keyboard
-  keyboardType={KeyboardType.Decimal}
-  displayType={DisplayType.Text}
-  onChange={(values) => console.log(values)}
-/>
-
-// With custom toolbar
-<Keyboard
-  toolbar={<CustomToolbar />}
-  theme="dark"
-/>
-
-// With custom theme values
-<Keyboard
-  themeValuesOverride={{
-    keyBackgroundColor: '#e0e0e0',
-    keyTextColor: '#333'
-  }}
-/>
-
-// With replacement display
-<Keyboard
-  displayType={DisplayType.Replace}
-  replaceElement="•"
-/>
-```
-
-## Features
-
-- Multiple keyboard types (Decimal/Number)
-- Different display modes (Text/Number/Replace)
-- Customizable themes (Light/Dark)
-- Custom toolbar support
-- Responsive design
-- Animated key presses
-- Value formatting
-- Event handling for open/close/change
 
 ## InputKeyboard Component
 
@@ -440,63 +271,37 @@ inputKeyboardRef.current?.blur();
 
 ### Event Handlers
 
-| Prop       | Type                                   | Description                 |
-| ---------- | -------------------------------------- | --------------------------- |
-| `onChange` | `(values: KeyboardValuesType) => void` | Callback when value changes |
-
-## Usage Example
-
-```tsx
-import { InputKeyboard, KeyboardType, DisplayType } from 'tek-keyboard';
-
-// Basic usage
-<InputKeyboard
-  value=""
-  onChange={(values) => console.log(values)}
-/>
-
-// With custom input and keyboard props
-<InputKeyboard
-  value=""
-  theme="dark"
-  inputProps={{
-    placeholder: "Enter amount",
-    leftElement: <CurrencyIcon />
-  }}
-  keyboardProps={{
-    keyboardType: KeyboardType.Decimal,
-    displayType: DisplayType.Number
-  }}
-/>
-
-// Always visible keyboard
-<InputKeyboard
-  value=""
-  alwaysOpen={true}
-  keyboardProps={{
-    toolbar: <CustomToolbar />
-  }}
-/>
-
-// With custom theme values
-<InputKeyboard
-  value=""
-  inputProps={{
-    themeValuesOverride: {
-      color: '#ff0000',
-      backgroundColor: '#f0f0f0'
-    }
-  }}
-  keyboardProps={{
-    themeValuesOverride: {
-      keyBackgroundColor: '#e0e0e0',
-      keyTextColor: '#333'
-    }
-  }}
-/>
-```
+| Prop       | Type                      | Description                 |
+| ---------- | ------------------------- | --------------------------- |
+| `onChange` | `(value: string) => void` | Callback when value changes |
 
 ## Features
+
+### Input Component
+
+- Responsive design
+- Customizable themes (Light/Dark)
+- Support for left and right elements
+- Animated cursor
+- Customizable styling
+- Placeholder support
+- Focus/blur handling
+- Auto-focus and always-focus options
+- Display type customization (Text/Number/Replace)
+
+### Keyboard Component
+
+- Multiple keyboard types (Text/Number/Decimal)
+- Customizable themes (Light/Dark)
+- Custom toolbar support
+- Responsive design
+- Animated key presses
+- Value validation
+- Height management
+- Click outside handling
+- Full-height toolbar option
+
+### InputKeyboard Component
 
 - Integrated Input and Keyboard components
 - Automatic focus management
@@ -508,16 +313,6 @@ import { InputKeyboard, KeyboardType, DisplayType } from 'tek-keyboard';
 - Event handling for value changes
 - Support for different keyboard types and display modes
 
-## Component Integration
-
-The InputKeyboard component manages the following interactions:
-
-- Opens keyboard when input is focused
-- Closes keyboard when input loses focus
-- Synchronizes value between input and keyboard
-- Handles theme consistency between components
-- Manages keyboard visibility state
-
 ## Best Practices
 
 1. Use `alwaysOpen` when you want the keyboard to be permanently visible
@@ -525,3 +320,6 @@ The InputKeyboard component manages the following interactions:
 3. Customize input and keyboard separately using their respective prop objects
 4. Use theme props at the InputKeyboard level for consistent theming
 5. Handle value changes through the `onChange` callback
+6. Use `displayType` and `replaceElement` for secure input display
+7. Utilize `autoFocus` and `alwaysFocus` for better user experience
+8. Customize styles and class names for better integration with your design system
