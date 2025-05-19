@@ -144,6 +144,13 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
 
       body?.appendChild(keyboardsSectionRef.current);
     }
+
+    return () => {
+      if (keyboardsSectionRef.current) {
+        const body = document.querySelector("body");
+        body?.removeChild(keyboardsSectionRef.current);
+      }
+    };
   }, [isOpened]);
 
   useEffect(() => {
