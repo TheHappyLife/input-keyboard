@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import SVGBackground from "./components/Background";
 import clsx from "clsx";
 
-function BottomNavbar() {
+export const BottomNavbar = () => {
   const prevClientY = useRef(0);
   const prevTime = useRef(new Date().getTime());
   const containerRef = useRef<HTMLDivElement>(null);
@@ -58,6 +58,4 @@ function BottomNavbar() {
       <div className="bottom-navbar-content"></div>
     </div>
   );
-}
-
-export default BottomNavbar;
+};
