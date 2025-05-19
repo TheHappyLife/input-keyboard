@@ -9,12 +9,6 @@ export interface KeyboardThemeValues {
   keyActiveBackground: string;
 }
 
-export enum DisplayType {
-  Text = "text",
-  Number = "number",
-  Replace = "replace",
-}
-
 export enum KeyboardType {
   Text = "text",
   Number = "number",
@@ -26,13 +20,6 @@ export interface KeyboardKey {
   value: string;
   subLabel?: string;
 }
-
-export interface KeyboardValuesType {
-  displayValue: KeyboardDisplayValue[];
-  value: string;
-}
-
-export type KeyboardDisplayValue = ReactNode;
 
 export interface KeyboardStyleProps {
   container?: CSSProperties;
@@ -53,15 +40,11 @@ export interface KeyboardClassNamesProps {
 
 export interface KeyboardProps {
   keyboardType?: KeyboardType;
-  displayType?: DisplayType;
-  replaceElement?: string;
   theme?: THEME;
-  themeValuesOverride?: KeyboardThemeValues;
   onOpen?: (height?: number) => void;
   onClose?: () => void;
-  onChange?: (values: KeyboardValuesType) => void;
+  onChange?: (values: string) => void;
   toolbar?: React.ReactNode;
-  initialValue?: string;
   alwaysOpen?: boolean;
   trigger?: React.ReactNode;
   openInit?: boolean;
@@ -71,13 +54,14 @@ export interface KeyboardProps {
   toolbarFullHeight?: boolean; // if true, the toolbar will be full remain height of the screen after minus the height of the keyboard
   keyboardId?: string;
   toolbarId?: string;
-  hideKeyboard?: boolean;
+  value?: string;
+  validateKeyValue?: (value: string) => string;
 }
 
 export interface KeyboardRef {
   open: () => void;
   close: () => void;
-  setValue: (value: string) => void;
+  // setValue: (value: string) => void;
   getKeyboardHeight?: () => number | undefined;
 }
 

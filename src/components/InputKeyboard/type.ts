@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { InputProps } from "./components/Input/type";
 import { KeyboardProps } from "./components/Keyboard/type";
 
@@ -19,4 +20,17 @@ export interface InputKeyboardRef {
 export enum THEME {
   LIGHT = "light",
   DARK = "dark",
+}
+
+export enum DisplayType {
+  Text = "text",
+  Number = "number",
+  Replace = "replace",
+}
+
+export type DisplayValue = ReactNode;
+
+export interface StandardValues {
+  displayValue: DisplayValue[];
+  value: string;
 }

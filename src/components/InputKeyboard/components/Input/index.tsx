@@ -1,8 +1,17 @@
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { InputProps, InputRef } from "./type";
 import Cursor from "./Components/Cursor";
-import { THEME } from "../../type";
+import { DisplayType, THEME } from "../../type";
 import clsx from "clsx";
+import getStandardValues from "../../functions/getStandardValues";
 
 const BUFFER_ELEMENT = <span style={{ opacity: 0 }}>i</span>;
 
@@ -10,11 +19,10 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLDivElement>(null);
   const {
-    displayValue,
     placeholder,
     elementsAcceptIds,
     theme = THEME.LIGHT,
-    // themeValuesOverride,
+    value,
     onFocus,
     onBlur,
     styles,
@@ -23,14 +31,21 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
     classNames,
     autoFocus,
     alwaysFocus,
+    displayType = DisplayType.Text,
+    replaceElement = "●",
+    renderValue = (value) => value,
     ...rest
   } = props;
-  const isEmpty = !displayValue || displayValue.length === 0;
 
-  // const themeValues = useMemo(
-  //   () => themeValuesOverride ?? INPUT_THEME[theme],
-  //   [theme, themeValuesOverride]
-  // );
+  const displayValue = useMemo(() => {
+    if (!value) return [];
+
+    const { displayValue } = getStandardValues(value, displayType, replaceElement);
+
+    return displayValue;
+  }, [value, displayType, replaceElement]);
+
+  const isEmpty = !displayValue || displayValue.length === 0;
 
   const focus = () => {
     setTimeout(() => {
@@ -102,7 +117,7 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
             }}
           >
             {isEmpty && BUFFER_ELEMENT}
-            {displayValue?.map((value, index) => <span key={index}>{value}</span>)}
+            {displayValue?.map((value, index) => <span key={index}>{renderValue(value)}</span>)}
             {isFocused && <Cursor style={{ position: "absolute", left: isEmpty ? 0 : "100%" }} />}
           </div>
         )}

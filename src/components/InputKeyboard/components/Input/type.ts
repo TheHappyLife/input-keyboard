@@ -1,13 +1,12 @@
+import { DisplayType } from "./../../type";
 import { ReactNode, CSSProperties } from "react";
 import { THEME } from "../../type";
 export interface InputProps {
-  displayValue?: ReactNode[];
   value?: string;
   onFocus?: () => void;
   onBlur?: () => void;
   placeholder?: string;
   theme?: THEME;
-  themeValuesOverride?: InputThemeValues;
   leftElement?: ReactNode;
   rightElement?: ReactNode;
   styles?: InputStyleProps;
@@ -15,6 +14,9 @@ export interface InputProps {
   elementsAcceptIds?: string[];
   autoFocus?: boolean;
   alwaysFocus?: boolean;
+  renderValue?: (value: ReactNode) => ReactNode;
+  displayType?: DisplayType;
+  replaceElement?: ReactNode;
 }
 
 export interface InputRef {

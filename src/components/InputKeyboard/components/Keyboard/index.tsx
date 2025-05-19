@@ -8,15 +8,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  DisplayType,
-  KeyboardType,
-  KeyboardKey,
-  KeyboardDisplayValue,
-  KeyboardProps,
-  KeyboardRef,
-  KeyboardValuesType,
-} from "./type";
+import { KeyboardType, KeyboardKey, KeyboardProps, KeyboardRef } from "./type";
 import { NUM_OF_ROWS, NUM_OF_COLUMNS, KEYBOARD_KEYS, DELETE_KEY_VALUE } from "./const";
 import TheKey from "./components/TheKey";
 import { THEME } from "../../type";
@@ -25,30 +17,29 @@ import clsx from "clsx";
 const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const {
     keyboardType = KeyboardType.Decimal,
-    displayType = DisplayType.Text,
-    replaceElement = "•",
     theme = THEME.LIGHT,
     onOpen,
     onClose,
     onChange,
     toolbar,
-    initialValue = "",
     styles,
     outFocusOnClickToolbar = true,
     toolbarFullHeight = false,
     keyboardId,
     toolbarId,
-    hideKeyboard = false,
     classNames,
+    value = "",
+    alwaysOpen,
+    trigger,
+    openInit,
+    validateKeyValue = (value) => value,
     ...rest
   } = props;
   const triggerRef = useRef<HTMLDivElement>(null);
   const keyboardRef = useRef<HTMLDivElement>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const keyboardsSectionRef = useRef<HTMLDivElement>(null);
-  const { alwaysOpen, trigger, openInit } = props;
-  const valueRef = useRef(initialValue);
-  const displayValueRef = useRef<KeyboardDisplayValue[]>([]);
+  const valueRef = useRef(value || "");
   const numOfRows = useMemo(() => NUM_OF_ROWS[keyboardType] ?? 4, [keyboardType]);
   const numOfColumns = useMemo(() => NUM_OF_COLUMNS[keyboardType] ?? 3, [keyboardType]);
   const keyboardKeys = useMemo(
@@ -72,26 +63,24 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     onClose?.();
   };
 
+  //perform open when component is mounted if openInit is true or alwaysOpen is true
   useLayoutEffect(() => {
     if (openInit || alwaysOpen) {
       open();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openInit, alwaysOpen]);
 
-  const updateValue = useCallback((inputValue: string) => {
-    const { displayValue, value } = getKeyboardValues(inputValue);
-    if (value === valueRef.current) return;
-    valueRef.current = value;
-    displayValueRef.current = [displayValue];
-    onChange?.({
-      displayValue: displayValue,
-      value: value,
-    });
-  }, []);
-
-  const setValue = (value: string) => {
-    updateValue(value);
-  };
+  const updateValue = useCallback(
+    (value: string) => {
+      const validatedValue = validateKeyValue?.(value);
+      console.warn("🚀 ~ validatedValue:", validatedValue);
+      if (validatedValue === valueRef.current) return;
+      valueRef.current = validatedValue;
+      onChange?.(validatedValue);
+    },
+    [onChange, validateKeyValue]
+  );
 
   const getKeyboardHeight = () => {
     return keyboardsSectionRef.current?.clientHeight;
@@ -100,41 +89,22 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   useImperativeHandle(ref, () => ({
     open: open,
     close: close,
-    setValue,
     getKeyboardHeight,
   }));
 
-  const getKeyboardValues = useCallback(
-    (value: string): KeyboardValuesType => {
-      if (displayType === DisplayType.Text) {
-        return { displayValue: value?.split(""), value: value };
-      }
-      if (displayType === DisplayType.Number) {
-        const numberValue = Number(value);
-        if (isNaN(numberValue)) {
-          return { displayValue: [""], value: "" };
-        }
-
-        return { displayValue: value?.split(""), value: value };
-      }
-
-      return { displayValue: value?.split("").map(() => replaceElement), value: value };
-    },
-    [displayType, replaceElement]
-  );
-
   const handleKeyboardKeyClick = useCallback(
     (clickedKey: KeyboardKey) => {
+      const currentValue = valueRef.current;
       if (keyboardType === KeyboardType.Decimal || keyboardType === KeyboardType.Number) {
         if (clickedKey.value === DELETE_KEY_VALUE) {
-          updateValue(valueRef.current.slice(0, -1));
+          updateValue(currentValue.slice(0, -1));
         } else {
-          updateValue(valueRef.current + clickedKey.value);
+          updateValue(currentValue + clickedKey.value);
         }
       } else {
       }
     },
-    [getKeyboardValues, keyboardType]
+    [keyboardType, updateValue]
   );
 
   useEffect(() => {
@@ -178,6 +148,14 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     };
   }, [alwaysOpen]);
 
+  useEffect(() => {
+    const validatedValue = validateKeyValue?.(value || "");
+    console.warn("🚀 ~ useEffect ~ validatedValue:", validatedValue);
+    if (validatedValue === valueRef.current) return;
+    console.warn("🚀 ~ useEffect ~ validatedValue: s", validatedValue);
+    valueRef.current = validatedValue;
+  }, [value, validateKeyValue]);
+
   return (
     <div style={{ ...styles?.container }} {...rest} className={clsx(theme, classNames?.container)}>
       {trigger && (
@@ -209,27 +187,25 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
             {toolbar}
           </div>
         )}
-        {!hideKeyboard && (
-          <div
-            id={keyboardId}
-            ref={keyboardRef}
-            className={clsx("board-of-keys-container", classNames?.keyboardContainer)}
-            style={{
-              gridTemplateColumns: `repeat(${numOfColumns}, 1fr)`,
-              gridTemplateRows: `repeat(${numOfRows}, 1fr)`,
-              ...styles?.keyboardContainer,
-            }}
-          >
-            {keyboardKeys!.map((keyboard, index) => (
-              <TheKey
-                key={index}
-                keyboard={keyboard}
-                handleKeyboardKeyClick={handleKeyboardKeyClick}
-                classNames={classNames?.theKey}
-              />
-            ))}
-          </div>
-        )}
+        <div
+          id={keyboardId}
+          ref={keyboardRef}
+          className={clsx("board-of-keys-container", classNames?.keyboardContainer)}
+          style={{
+            gridTemplateColumns: `repeat(${numOfColumns}, 1fr)`,
+            gridTemplateRows: `repeat(${numOfRows}, 1fr)`,
+            ...styles?.keyboardContainer,
+          }}
+        >
+          {keyboardKeys!.map((keyboard, index) => (
+            <TheKey
+              key={index}
+              keyboard={keyboard}
+              handleKeyboardKeyClick={handleKeyboardKeyClick}
+              classNames={classNames?.theKey}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
