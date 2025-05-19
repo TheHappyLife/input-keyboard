@@ -6,9 +6,6 @@ export { Keyboard } from "./components/InputKeyboard/components/Keyboard";
 // Theme exports
 export { THEME } from "./components/InputKeyboard/type";
 
-// CSS export
-export { default as styles } from "./components/InputKeyboard/input-keyboard.css";
-
 // InputKeyboard types
 export type { InputKeyboardProps, InputKeyboardRef } from "./components/InputKeyboard/type";
 
