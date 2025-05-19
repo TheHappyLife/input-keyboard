@@ -17,10 +17,18 @@ import {
   KeyboardRef,
   KeyboardValuesType,
 } from "./type";
-import { NUM_OF_ROWS, NUM_OF_COLUMNS, KEYBOARD_KEYS, DELETE_KEY_VALUE } from "./const";
+import {
+  NUM_OF_ROWS,
+  NUM_OF_COLUMNS,
+  KEYBOARD_THEME,
+  KEYBOARD_KEYS,
+  BOARD_OF_KEYS_CONTAINER,
+  KEYBOARD_SECTION_STYLE,
+  KEYBOARD_TOOLBAR,
+  DELETE_KEY_VALUE,
+} from "./const";
 import TheKey from "./components/TheKey";
 import { THEME } from "../../type";
-import clsx from "clsx";
 
 const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const {
@@ -28,6 +36,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     displayType = DisplayType.Text,
     replaceElement = "•",
     theme = THEME.LIGHT,
+    themeValuesOverride,
     onOpen,
     onClose,
     onChange,
@@ -39,7 +48,6 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     keyboardId,
     toolbarId,
     hideKeyboard = false,
-    classNames,
     ...rest
   } = props;
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -51,6 +59,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const displayValueRef = useRef<KeyboardDisplayValue[]>([]);
   const numOfRows = useMemo(() => NUM_OF_ROWS[keyboardType] ?? 4, [keyboardType]);
   const numOfColumns = useMemo(() => NUM_OF_COLUMNS[keyboardType] ?? 3, [keyboardType]);
+  const themeValues = useMemo(() => themeValuesOverride ?? KEYBOARD_THEME[theme], [theme, themeValuesOverride]);
   const keyboardKeys = useMemo(
     () => KEYBOARD_KEYS[keyboardType] ?? KEYBOARD_KEYS[KeyboardType.Decimal],
     [keyboardType]
@@ -171,17 +180,17 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   }, [alwaysOpen]);
 
   return (
-    <div style={{ ...styles?.container }} {...rest} className={clsx(theme, classNames?.container)}>
+    <div style={{ ...styles?.container }} {...rest}>
       {trigger && (
-        <div onClick={open} ref={triggerRef} className={clsx(classNames?.trigger)}>
+        <div onClick={open} ref={triggerRef} style={styles?.trigger}>
           {trigger}
         </div>
       )}
 
       <div
         ref={keyboardsSectionRef}
-        className={clsx(theme, "keyboard-section", classNames?.keyboardContainer)}
         style={{
+          ...KEYBOARD_SECTION_STYLE,
           height: toolbarFullHeight ? "100dvh" : "fit-content",
           ...styles?.keyboardContainer,
           visibility: isOpened ? "visible" : "hidden",
@@ -191,8 +200,8 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
           <div
             id={toolbarId}
             ref={toolbarRef}
-            className={clsx(classNames?.toolbar)}
             style={{
+              ...KEYBOARD_TOOLBAR,
               flex: toolbarFullHeight ? 1 : "unset",
               overflowY: "auto",
               ...styles?.toolbar,
@@ -205,10 +214,12 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
           <div
             id={keyboardId}
             ref={keyboardRef}
-            className={clsx("board-of-keys-container", classNames?.keyboardContainer)}
             style={{
+              ...BOARD_OF_KEYS_CONTAINER,
               gridTemplateColumns: `repeat(${numOfColumns}, 1fr)`,
               gridTemplateRows: `repeat(${numOfRows}, 1fr)`,
+              backgroundColor: themeValues.backgroundColor,
+              color: themeValues.color,
               ...styles?.keyboardContainer,
             }}
           >
@@ -217,7 +228,11 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
                 key={index}
                 keyboard={keyboard}
                 handleKeyboardKeyClick={handleKeyboardKeyClick}
-                classNames={classNames?.theKey}
+                themeValues={themeValues}
+                styles={{
+                  key: styles?.key,
+                  keyActive: styles?.keyActive,
+                }}
               />
             ))}
           </div>

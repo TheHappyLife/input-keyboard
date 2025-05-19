@@ -1,8 +1,15 @@
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { InputProps, InputRef } from "./type";
-import Cursor from "./Components/Cursor";
+import Cursor from "./Components/Cusor";
+import {
+  INPUT_CONTAINER_STYLE,
+  INPUT_STYLE,
+  INPUT_PLACEHOLDER_STYLE,
+  INPUT_THEME,
+  INPUT_TEXT_CONTAINER_STYLE,
+  INPUT_PLACEHOLDER_CONTAINER_STYLE,
+} from "./const";
 import { THEME } from "../../type";
-import clsx from "clsx";
 
 const BUFFER_ELEMENT = <span style={{ opacity: 0 }}>i</span>;
 
@@ -14,23 +21,19 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
     placeholder,
     elementsAcceptIds,
     theme = THEME.LIGHT,
-    // themeValuesOverride,
+    themeValuesOverride,
     onFocus,
     onBlur,
     styles,
     leftElement,
     rightElement,
-    classNames,
     autoFocus,
     alwaysFocus,
     ...rest
   } = props;
   const isEmpty = !displayValue || displayValue.length === 0;
 
-  // const themeValues = useMemo(
-  //   () => themeValuesOverride ?? INPUT_THEME[theme],
-  //   [theme, themeValuesOverride]
-  // );
+  const themeValues = useMemo(() => themeValuesOverride ?? INPUT_THEME[theme], [theme, themeValuesOverride]);
 
   const focus = () => {
     setTimeout(() => {
@@ -82,22 +85,25 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
       {...rest}
       ref={inputRef}
       onClick={focus}
-      className={clsx(theme, "input-container", classNames?.container)}
       style={{
+        ...INPUT_CONTAINER_STYLE,
+        color: themeValues.color,
+        border: themeValues.border,
+        backgroundColor: themeValues.backgroundColor,
         ...styles?.container,
       }}
     >
       {leftElement}
       <div
-        className={clsx("input", classNames?.input)}
         style={{
+          ...INPUT_STYLE,
           ...styles?.input,
         }}
       >
         {(!isEmpty || isFocused) && (
           <div
-            className={clsx("input-text-container", classNames?.text)}
             style={{
+              ...INPUT_TEXT_CONTAINER_STYLE,
               ...styles?.text,
             }}
           >
@@ -107,10 +113,12 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
           </div>
         )}
         {isEmpty && !isFocused && (
-          <span className={clsx("input-placeholder-container", classNames?.placeholder)}>
+          <span style={INPUT_PLACEHOLDER_CONTAINER_STYLE}>
             {!!placeholder && (
               <span
                 style={{
+                  ...INPUT_PLACEHOLDER_STYLE,
+                  color: themeValues.placeholderColor,
                   ...styles?.placeholder,
                 }}
               >

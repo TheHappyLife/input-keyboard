@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { TheKeyProps } from "../type";
-import { KEY_NORMAL_STYLE, SUB_LABEL_STYLE } from "./const";
+import clsx from "clsx";
 
-const TheKey: React.FC<TheKeyProps> = ({ keyboard, handleKeyboardKeyClick, themeValues, styles }) => {
+const TheKey: React.FC<TheKeyProps> = ({ keyboard, handleKeyboardKeyClick, classNames }) => {
   const [isActive, setIsActive] = useState(false);
 
   const handleActive = () => {
@@ -13,36 +13,21 @@ const TheKey: React.FC<TheKeyProps> = ({ keyboard, handleKeyboardKeyClick, theme
     setIsActive(false);
   };
 
-  const buttonStyle = {
-    ...KEY_NORMAL_STYLE,
-    backgroundColor: isActive ? themeValues.keyActiveBackground : themeValues.keyBackground,
-    boxShadow: themeValues.keyShadow,
-    transition: "background-color 0.1s ease",
-    ...styles?.key,
-    ...(isActive && styles?.keyActive),
-  };
-
-  const labelStyle = {
-    color: themeValues.color,
-  };
-
-  const subLabelStyle = {
-    ...SUB_LABEL_STYLE,
-  };
-
   return (
     <button
       type="button"
       aria-label={String(keyboard.label)}
-      style={buttonStyle}
+      className={clsx("key-normal", isActive ? "key-active" : "", classNames?.key)}
       onClick={() => handleKeyboardKeyClick(keyboard)}
       onMouseDown={handleActive}
       onMouseUp={handleInactive}
       onTouchStart={handleActive}
       onTouchEnd={handleInactive}
     >
-      <span style={labelStyle}>{keyboard.label}</span>
-      {keyboard.subLabel && <span style={subLabelStyle}>{keyboard.subLabel}</span>}
+      <span className={clsx(classNames?.label)}>{keyboard.label}</span>
+      {keyboard.subLabel && (
+        <span className={clsx("sub-label", classNames?.subLabel)}>{keyboard.subLabel}</span>
+      )}
     </button>
   );
 };

@@ -43,13 +43,6 @@ export interface KeyboardStyleProps {
   keyActive?: CSSProperties;
   trigger?: CSSProperties;
 }
-export interface KeyboardClassNamesProps {
-  container?: string;
-  toolbar?: string;
-  keyboardContainer?: string;
-  trigger?: string;
-  theKey?: TheKeyClassNames;
-}
 
 export interface KeyboardProps {
   keyboardType?: KeyboardType;
@@ -66,7 +59,6 @@ export interface KeyboardProps {
   trigger?: React.ReactNode;
   openInit?: boolean;
   styles?: KeyboardStyleProps;
-  classNames?: KeyboardClassNamesProps;
   outFocusOnClickToolbar?: boolean;
   toolbarFullHeight?: boolean; // if true, the toolbar will be full remain height of the screen after minus the height of the keyboard
   keyboardId?: string;
@@ -84,12 +76,9 @@ export interface KeyboardRef {
 export interface TheKeyProps {
   keyboard: KeyboardKey;
   handleKeyboardKeyClick: (keyboard: KeyboardKey) => void;
-  classNames?: TheKeyClassNames;
-}
-
-export interface TheKeyClassNames {
-  key?: string;
-  keyActive?: string;
-  label?: string;
-  subLabel?: string;
+  themeValues: KeyboardThemeValues;
+  styles?: {
+    key?: CSSProperties;
+    keyActive?: CSSProperties;
+  };
 }

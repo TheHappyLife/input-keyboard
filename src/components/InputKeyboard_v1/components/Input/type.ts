@@ -11,7 +11,6 @@ export interface InputProps {
   leftElement?: ReactNode;
   rightElement?: ReactNode;
   styles?: InputStyleProps;
-  classNames?: InputClassNames;
   elementsAcceptIds?: string[];
   autoFocus?: boolean;
   alwaysFocus?: boolean;
@@ -34,11 +33,4 @@ export interface InputStyleProps {
   input?: CSSProperties;
   text?: CSSProperties;
   placeholder?: CSSProperties;
-}
-
-export interface InputClassNames {
-  container?: string;
-  input?: string;
-  text?: string;
-  placeholder?: string;
 }
