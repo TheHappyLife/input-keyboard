@@ -16,7 +16,7 @@
     "publish:minor": "npm run version:minor && npm publish",
     "publish:major": "npm run version:major && npm publish",
     "release": "git add . && git commit -m \"new version\" &&  npm run clean && npm run build && npm version patch",
-    "copy-css": "mkdir -p dist/styles && cp src/components/InputKeyboard/input-keyboard.css dist/styles/"
+    "copy-css": "mkdir -p dist/styles && cp src/components/BottomNavbar/style.css dist/styles/"
   },
   "keywords": [
     ""
