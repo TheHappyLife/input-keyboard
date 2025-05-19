@@ -139,19 +139,20 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
 
   useEffect(() => {
     if (isOpened) return;
+    const body = document.querySelector("body");
     if (keyboardsSectionRef.current) {
-      const body = document.querySelector("body");
-
       body?.appendChild(keyboardsSectionRef.current);
     }
+  }, [isOpened]);
+  useEffect(() => {
+    const body = document.querySelector("body");
 
     return () => {
       if (keyboardsSectionRef.current) {
-        const body = document.querySelector("body");
         body?.removeChild(keyboardsSectionRef.current);
       }
     };
-  }, [isOpened]);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
