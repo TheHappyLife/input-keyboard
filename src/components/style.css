@@ -1,0 +1,22 @@
+.bottom-navbar-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  height: "fit-content";
+}
+
+.bottom_navbar_hidden {
+  transform: translateY(150%);
+}
+
+.bottom_navbar_visible {
+  transform: translateY(0);
+}
+.bottom-navbar-content {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}

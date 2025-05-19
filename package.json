@@ -1,7 +1,7 @@
 {
-  "name": "tek-input-keyboard",
-  "version": "0.0.5",
-  "description": "A custom input and keyboard",
+  "name": "ting-money-base",
+  "version": "0.0.0",
+  "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -19,9 +19,7 @@
     "copy-css": "mkdir -p dist/styles && cp src/components/InputKeyboard/input-keyboard.css dist/styles/"
   },
   "keywords": [
-    "react",
-    "input",
-    "keyboard"
+    ""
   ],
   "author": "",
   "license": "ISC",
