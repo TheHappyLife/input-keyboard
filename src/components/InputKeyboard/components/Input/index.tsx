@@ -88,7 +88,6 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
     <div
       {...rest}
       ref={inputRef}
-      onClick={focus}
       className={clsx(theme, "input-container", classNames?.container)}
       style={{
         ...styles?.container,
@@ -96,6 +95,7 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
     >
       {leftElement}
       <div
+        onClick={focus}
         className={clsx("input", classNames?.input)}
         style={{
           ...styles?.input,
