@@ -1,6 +1,6 @@
 {
   "name": "tek-input-keyboard",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A custom input and keyboard",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
