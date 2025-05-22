@@ -92,7 +92,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
 
   const handleKeyboardKeyClick = useCallback(
     (clickedKey: KeyboardKey) => {
-      const currentValue = valueRef.current;
+      const currentValue = value;
       if (keyboardType === KeyboardType.Decimal || keyboardType === KeyboardType.Number) {
         if (clickedKey.value === DELETE_KEY_VALUE) {
           updateValue(currentValue.slice(0, -1));
