@@ -3,10 +3,8 @@ export { InputKeyboard } from "./components/InputKeyboard";
 export { Input } from "./components/Input";
 export { Keyboard } from "./components/Keyboard";
 
-// Theme exports
-export { THEME, DisplayType } from "./components/InputKeyboard/type";
-
 // InputKeyboard types
+export { THEME, DisplayType } from "./components/InputKeyboard/type";
 export type {
   InputKeyboardProps,
   InputKeyboardRef,
