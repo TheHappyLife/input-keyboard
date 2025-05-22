@@ -73,7 +73,6 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const updateValue = useCallback(
     (value: string) => {
       const validatedValue = validateKeyValue?.(value);
-      if (validatedValue === valueRef.current) return;
       valueRef.current = validatedValue;
       onChange?.(validatedValue);
     },
