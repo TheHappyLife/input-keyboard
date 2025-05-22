@@ -15,7 +15,8 @@
     "publish:patch": "npm run version:patch && npm publish",
     "publish:minor": "npm run version:minor && npm publish",
     "publish:major": "npm run version:major && npm publish",
-    "release": "npm run clean && npm run format && npm run build && npm run copy-css && git add . && git commit -m \"new version\""
+    "release": "npm run clean && npm run format && npm run build && npm run copy-css && git add . && git commit -m \"new version\"",
+    "publish": "npm run release && npm run version:patch && npm publish"
   },
   "keywords": [
     "react",
