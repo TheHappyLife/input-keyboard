@@ -107,19 +107,20 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
 
   useEffect(() => {
     const body = document.querySelector("body");
-    const box = document.createElement("div");
     if (keyboardsSectionRef.current) {
-      box?.appendChild(keyboardsSectionRef.current);
-      body?.appendChild(box);
+      body?.appendChild(keyboardsSectionRef.current);
     }
 
     return () => {
-      box?.remove();
+      if (keyboardsSectionRef.current) {
+        body?.removeChild(keyboardsSectionRef.current);
+      }
     };
   }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      console.warn("handleClickOutside");
       if (alwaysOpen) return;
       const isClickOnTrigger = triggerRef.current?.contains(event.target as Node);
       const isClickOnKeyboard = keyboardRef.current?.contains(event.target as Node);
@@ -138,7 +139,9 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      setTimeout(() => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      }, 500);
     };
   }, [alwaysOpen]);
 
