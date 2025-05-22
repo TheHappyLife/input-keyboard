@@ -15,12 +15,7 @@ export type {
 } from "./components/InputKeyboard/type";
 
 // Input component types
-export type {
-  InputProps,
-  InputRef,
-  InputThemeValues,
-  InputStyleProps,
-} from "./components/Input/type";
+export type { InputProps, InputRef, InputThemeValues, InputStyleProps } from "./components/Input/type";
 
 // Keyboard component types
 export type {

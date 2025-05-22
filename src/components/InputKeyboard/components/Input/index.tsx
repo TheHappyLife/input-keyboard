@@ -1,12 +1,4 @@
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { InputProps, InputRef } from "./type";
 import Cursor from "./Components/Cursor";
 import { DisplayType, THEME } from "../InputKeyboard/type";
