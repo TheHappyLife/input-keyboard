@@ -105,17 +105,14 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   );
 
   useEffect(() => {
-    if (isOpened) return;
     const body = document.querySelector("body");
     if (keyboardsSectionRef.current) {
       body?.appendChild(keyboardsSectionRef.current);
     }
-  }, [isOpened]);
-  useEffect(() => {
-    const body = document.querySelector("body");
 
     return () => {
       if (keyboardsSectionRef.current) {
+        alert("removing keyboard section");
         body?.removeChild(keyboardsSectionRef.current);
       }
     };
