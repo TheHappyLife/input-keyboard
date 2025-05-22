@@ -1,6 +1,6 @@
 {
   "name": "tek-input-keyboard",
-  "version": "0.0.9",
+  "version": "0.0.8",
   "description": "A custom input and keyboard",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,9 +9,13 @@
     "format": "prettier --write . && eslint --fix --ignore-pattern .next --ignore-pattern node_modules --ignore-pattern dist",
     "build": "tsc",
     "copy-css": "mkdir -p dist/styles && cp src/components/InputKeyboard/style.css dist/styles/",
-    "version:patch": "npm version patch --no-git-tag-version",
-    "tag-version": "node scripts/create-version-tag.js",
-    "release": "npm run clean && npm run format && npm run build && npm run copy-css && git diff --quiet || (git add . && git commit -m \"chore: release\") && npm run version:patch && npm run tag-version"
+    "version:patch": "npm version patch",
+    "version:minor": "npm version minor",
+    "version:major": "npm version major",
+    "publish:patch": "npm run version:patch && npm publish",
+    "publish:minor": "npm run version:minor && npm publish",
+    "publish:major": "npm run version:major && npm publish",
+    "release": "npm run clean && npm run format && npm run build && npm run copy-css && git add . && git commit -m \"new version\" && npm version patch"
   },
   "keywords": [
     "react",
