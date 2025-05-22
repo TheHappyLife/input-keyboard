@@ -1,6 +1,6 @@
-import { DisplayType } from "./../../type";
+import { DisplayType } from "../InputKeyboard/type";
 import { ReactNode, CSSProperties } from "react";
-import { THEME } from "../../type";
+import { THEME } from "../InputKeyboard/type";
 export interface InputProps {
   value?: string;
   onFocus?: () => void;

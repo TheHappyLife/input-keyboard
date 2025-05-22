@@ -1,7 +1,11 @@
 import { ReactNode } from "react";
-import { DisplayType, StandardValues } from "../type";
+import { DisplayType, StandardValues } from "../components/InputKeyboard/type";
 
-const getStandardValues = (value: string, displayType?: DisplayType, replaceElement?: ReactNode): StandardValues => {
+export const getStandardValues = (
+  value: string,
+  displayType?: DisplayType,
+  replaceElement?: ReactNode
+): StandardValues => {
   if (displayType === DisplayType.Text) {
     return { displayValue: value?.split(""), value: value };
   }
@@ -16,5 +20,3 @@ const getStandardValues = (value: string, displayType?: DisplayType, replaceElem
 
   return { displayValue: value?.split("").map(() => replaceElement), value: value };
 };
-
-export default getStandardValues;

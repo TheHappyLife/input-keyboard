@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { InputProps } from "./components/Input/type";
-import { KeyboardProps } from "./components/Keyboard/type";
+import { InputProps } from "../Input/type";
+import { KeyboardProps } from "../Keyboard/type";
 
 export interface InputKeyboardProps {
   keyboardProps?: Omit<KeyboardProps, "openInit" | "onChange">;

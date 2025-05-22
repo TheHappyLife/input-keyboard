@@ -1,5 +1,5 @@
 import { CSSProperties, ReactNode } from "react";
-import { THEME } from "../../type";
+import { THEME } from "../InputKeyboard/type";
 
 export interface KeyboardThemeValues {
   backgroundColor: string;

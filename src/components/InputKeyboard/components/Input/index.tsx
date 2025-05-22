@@ -1,9 +1,17 @@
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { InputProps, InputRef } from "./type";
 import Cursor from "./Components/Cursor";
-import { DisplayType, THEME } from "../../type";
+import { DisplayType, THEME } from "../InputKeyboard/type";
 import clsx from "clsx";
-import getStandardValues from "../../functions/getStandardValues";
+import { getStandardValues } from "../../functions/getStandardValues";
 
 const BUFFER_ELEMENT = <span style={{ opacity: 0 }}>i</span>;
 

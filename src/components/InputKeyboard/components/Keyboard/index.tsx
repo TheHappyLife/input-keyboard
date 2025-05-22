@@ -11,7 +11,7 @@ import React, {
 import { KeyboardType, KeyboardKey, KeyboardProps, KeyboardRef } from "./type";
 import { NUM_OF_ROWS, NUM_OF_COLUMNS, KEYBOARD_KEYS, DELETE_KEY_VALUE } from "./const";
 import TheKey from "./components/TheKey";
-import { THEME } from "../../type";
+import { THEME } from "../InputKeyboard/type";
 import clsx from "clsx";
 
 const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
