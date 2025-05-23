@@ -13,6 +13,7 @@ import { NUM_OF_ROWS, NUM_OF_COLUMNS, KEYBOARD_KEYS, DELETE_KEY_VALUE } from "./
 import TheKey from "./components/TheKey";
 import { THEME } from "../InputKeyboard/type";
 import clsx from "clsx";
+import { formatValues } from "../../functions/format";
 
 const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const {
@@ -74,8 +75,9 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const updateValue = useCallback(
     (value: string) => {
       const validatedValue = validateKeyValue?.(value);
-      valueRef.current = validatedValue;
-      onChange?.(validatedValue);
+      const { value: exactValue } = formatValues(validatedValue);
+      valueRef.current = exactValue;
+      onChange?.(exactValue);
     },
     [onChange, validateKeyValue]
   );
@@ -144,8 +146,9 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
 
   useEffect(() => {
     const validatedValue = validateKeyValue?.(value || "");
-    if (validatedValue === valueRef.current) return;
-    valueRef.current = validatedValue;
+    const { value: exactValue } = formatValues(validatedValue);
+    if (exactValue === valueRef.current) return;
+    valueRef.current = exactValue;
   }, [value, validateKeyValue]);
 
   return (

@@ -4,6 +4,7 @@ import Cursor from "./Components/Cursor";
 import { DisplayType, THEME } from "../InputKeyboard/type";
 import clsx from "clsx";
 import { getStandardValues } from "../../functions/getStandardValues";
+import { formatValues } from "../../functions/format";
 
 const BUFFER_ELEMENT = <span style={{ opacity: 0 }}>i</span>;
 
@@ -26,11 +27,18 @@ const Input = forwardRef<InputRef, InputProps>((props, ref) => {
     displayType = DisplayType.Text,
     replaceElement = "●",
     renderValue = (value) => value,
+    isUseFormatNumber = true,
     ...rest
   } = props;
 
   const displayValue = useMemo(() => {
     if (!value) return [];
+
+    if (isUseFormatNumber) {
+      const { displayValue } = formatValues(value);
+
+      return displayValue?.split("");
+    }
 
     const { displayValue } = getStandardValues(value, displayType, replaceElement);
 

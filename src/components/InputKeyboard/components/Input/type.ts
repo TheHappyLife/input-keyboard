@@ -17,6 +17,7 @@ export interface InputProps {
   renderValue?: (value: ReactNode) => ReactNode;
   displayType?: DisplayType;
   replaceElement?: ReactNode;
+  isUseFormatNumber?: boolean;
 }
 
 export interface InputRef {
