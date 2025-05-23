@@ -9,7 +9,12 @@ export interface KeyboardThemeValues {
   keyActiveBackground: string;
 }
 
-export enum KeyboardType {
+export enum KeyboardType { // type of keyboard data
+  Text = "text",
+  Number = "number",
+}
+
+export enum LayoutType { // type of keyboard layout
   Text = "text",
   Number = "number",
   Decimal = "decimal",
@@ -56,6 +61,7 @@ export interface KeyboardProps {
   toolbarId?: string;
   value?: string;
   validateKeyValue?: (value: string) => string;
+  layoutType?: LayoutType;
 }
 
 export interface KeyboardRef {

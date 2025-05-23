@@ -1,17 +1,17 @@
-import { KeyboardType, KeyboardKey } from "./type";
+import { KeyboardKey, LayoutType } from "./type";
 
-export const NUM_OF_ROWS: Partial<Record<KeyboardType, number>> = {
-  [KeyboardType.Decimal]: 4,
+export const NUM_OF_ROWS: Partial<Record<LayoutType, number>> = {
+  [LayoutType.Decimal]: 4,
 };
 
-export const NUM_OF_COLUMNS: Partial<Record<KeyboardType, number>> = {
-  [KeyboardType.Decimal]: 3,
+export const NUM_OF_COLUMNS: Partial<Record<LayoutType, number>> = {
+  [LayoutType.Decimal]: 3,
 };
 
 export const DELETE_KEY_VALUE = "delete";
 
-export const KEYBOARD_KEYS: Partial<Record<KeyboardType, KeyboardKey[]>> = {
-  [KeyboardType.Decimal]: [
+export const KEYBOARD_KEYS: Partial<Record<LayoutType, KeyboardKey[]>> = {
+  [LayoutType.Decimal]: [
     { label: "1", value: "1", subLabel: "" },
     { label: "2", value: "2", subLabel: "ABC" },
     { label: "3", value: "3", subLabel: "DEF" },

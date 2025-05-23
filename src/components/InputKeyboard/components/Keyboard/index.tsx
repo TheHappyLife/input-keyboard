@@ -8,7 +8,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { KeyboardType, KeyboardKey, KeyboardProps, KeyboardRef } from "./type";
+import { KeyboardType, KeyboardKey, KeyboardProps, KeyboardRef, LayoutType } from "./type";
 import { NUM_OF_ROWS, NUM_OF_COLUMNS, KEYBOARD_KEYS, DELETE_KEY_VALUE } from "./const";
 import TheKey from "./components/TheKey";
 import { THEME } from "../InputKeyboard/type";
@@ -17,7 +17,8 @@ import { formatValues } from "../../functions/format";
 
 const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const {
-    keyboardType = KeyboardType.Decimal,
+    keyboardType = KeyboardType.Number,
+    layoutType = LayoutType.Decimal,
     theme = THEME.LIGHT,
     onOpen,
     onClose,
@@ -41,12 +42,9 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const toolbarRef = useRef<HTMLDivElement>(null);
   const keyboardsSectionRef = useRef<HTMLDivElement>(null);
   const valueRef = useRef(value || "");
-  const numOfRows = useMemo(() => NUM_OF_ROWS[keyboardType] ?? 4, [keyboardType]);
-  const numOfColumns = useMemo(() => NUM_OF_COLUMNS[keyboardType] ?? 3, [keyboardType]);
-  const keyboardKeys = useMemo(
-    () => KEYBOARD_KEYS[keyboardType] ?? KEYBOARD_KEYS[KeyboardType.Decimal],
-    [keyboardType]
-  );
+  const numOfRows = useMemo(() => NUM_OF_ROWS[layoutType] ?? 4, [layoutType]);
+  const numOfColumns = useMemo(() => NUM_OF_COLUMNS[layoutType] ?? 3, [layoutType]);
+  const keyboardKeys = useMemo(() => KEYBOARD_KEYS[layoutType] ?? KEYBOARD_KEYS[LayoutType.Decimal], [layoutType]);
   const [isOpen, setIsOpen] = useState(openInit);
 
   const isOpened = useMemo(() => {
@@ -72,12 +70,20 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     }
   }, [openInit, alwaysOpen]);
 
-  const updateValue = useCallback(
+  const updateValueAsNumber = useCallback(
     (value: string) => {
       const validatedValue = validateKeyValue?.(value);
       const { value: exactValue } = formatValues(validatedValue);
       valueRef.current = exactValue;
       onChange?.(exactValue);
+    },
+    [onChange, validateKeyValue]
+  );
+  const updateValueAsString = useCallback(
+    (value: string) => {
+      const validatedValue = validateKeyValue?.(value);
+      valueRef.current = validatedValue;
+      onChange?.(validatedValue);
     },
     [onChange, validateKeyValue]
   );
@@ -95,16 +101,24 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const handleKeyboardKeyClick = useCallback(
     (clickedKey: KeyboardKey) => {
       const currentValue = value;
-      if (keyboardType === KeyboardType.Decimal || keyboardType === KeyboardType.Number) {
-        if (clickedKey.value === DELETE_KEY_VALUE) {
-          updateValue(currentValue.slice(0, -1));
-        } else {
-          updateValue(currentValue + clickedKey.value);
-        }
-      } else {
+      switch (keyboardType) {
+        case KeyboardType.Number:
+          if (clickedKey.value === DELETE_KEY_VALUE) {
+            updateValueAsNumber(currentValue.slice(0, -1));
+          } else {
+            updateValueAsNumber(currentValue + clickedKey.value);
+          }
+          break;
+        case KeyboardType.Text:
+          if (clickedKey.value === DELETE_KEY_VALUE) {
+            updateValueAsString(currentValue.slice(0, -1));
+          } else {
+            updateValueAsString(currentValue + clickedKey.value);
+          }
+          break;
       }
     },
-    [keyboardType, updateValue]
+    [keyboardType, updateValueAsNumber, updateValueAsString]
   );
 
   useEffect(() => {
