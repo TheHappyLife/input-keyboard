@@ -98,6 +98,15 @@
   background-color: var(--keyboard-key-background);
   box-shadow: var(--keyboard-key-shadow);
   transition: background-color 0.1s ease;
+  user-select: none;
+  position: relative;
+}
+
+.key-normal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: transparent;
 }
 
 .key-active {
