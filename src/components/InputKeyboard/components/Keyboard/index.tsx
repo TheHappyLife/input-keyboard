@@ -199,11 +199,11 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
         <div
           id={keyboardId}
           ref={keyboardRef}
-          className={clsx("board-of-keys-container", classNames?.keyboardContainer)}
+          className={clsx("board-of-keys-container", classNames?.keyboards)}
           style={{
             gridTemplateColumns: `repeat(${numOfColumns}, 1fr)`,
             gridTemplateRows: `repeat(${numOfRows}, 1fr)`,
-            ...styles?.keyboardContainer,
+            ...styles?.keyboards,
           }}
         >
           {keyboardKeys!.map((keyboard, index) => (

@@ -30,6 +30,7 @@ export interface KeyboardStyleProps {
   container?: CSSProperties;
   toolbar?: CSSProperties;
   keyboardContainer?: CSSProperties;
+  keyboards?: CSSProperties;
   key?: CSSProperties;
   keyHover?: CSSProperties;
   keyActive?: CSSProperties;
@@ -39,6 +40,7 @@ export interface KeyboardClassNamesProps {
   container?: string;
   toolbar?: string;
   keyboardContainer?: string;
+  keyboards?: string;
   trigger?: string;
   theKey?: TheKeyClassNames;
 }
