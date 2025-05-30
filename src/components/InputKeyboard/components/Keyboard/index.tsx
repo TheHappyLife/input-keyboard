@@ -166,6 +166,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     event.preventDefault();
+    if (!isOpened) return;
     const keyValue = event.key;
     theKeyRefs.current?.[keyValue]?.click();
   }, []);
