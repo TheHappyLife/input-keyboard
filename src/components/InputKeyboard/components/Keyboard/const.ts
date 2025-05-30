@@ -8,7 +8,7 @@ export const NUM_OF_COLUMNS: Partial<Record<LayoutType, number>> = {
   [LayoutType.Decimal]: 3,
 };
 
-export const DELETE_KEY_VALUE = "delete";
+export const DELETE_KEY_VALUE = "Backspace";
 
 export const KEYBOARD_KEYS: Partial<Record<LayoutType, KeyboardKey[]>> = {
   [LayoutType.Decimal]: [

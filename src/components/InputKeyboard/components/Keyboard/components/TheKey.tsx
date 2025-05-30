@@ -1,9 +1,21 @@
-import { useState } from "react";
-import { TheKeyProps } from "../type";
+"use client";
+import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import clsx from "clsx";
+import { TheKeyProps } from "../type";
 
-const TheKey: React.FC<TheKeyProps> = ({ keyboard, handleKeyboardKeyClick, classNames }) => {
+export interface TheKeyRef {
+  click: () => void;
+}
+
+const TheKey = forwardRef<TheKeyRef, TheKeyProps>(({ keyboard, handleKeyboardKeyClick, classNames }, ref) => {
+  const keyRef = useRef<HTMLButtonElement>(null);
   const [isActive, setIsActive] = useState(false);
+
+  useImperativeHandle(ref, () => ({
+    click: () => {
+      keyRef.current?.click();
+    },
+  }));
 
   const handleActive = () => {
     setIsActive(true);
@@ -15,6 +27,7 @@ const TheKey: React.FC<TheKeyProps> = ({ keyboard, handleKeyboardKeyClick, class
 
   return (
     <button
+      ref={keyRef}
       type="button"
       aria-label={String(keyboard.label)}
       className={clsx("key-normal", isActive ? "key-active" : "", classNames?.key)}
@@ -28,6 +41,8 @@ const TheKey: React.FC<TheKeyProps> = ({ keyboard, handleKeyboardKeyClick, class
       {keyboard.subLabel && <span className={clsx("sub-label", classNames?.subLabel)}>{keyboard.subLabel}</span>}
     </button>
   );
-};
+});
+
+TheKey.displayName = "TheKey";
 
 export default TheKey;

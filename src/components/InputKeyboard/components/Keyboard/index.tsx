@@ -10,7 +10,7 @@ import React, {
 } from "react";
 import { KeyboardType, KeyboardKey, KeyboardProps, KeyboardRef, LayoutType } from "./type";
 import { NUM_OF_ROWS, NUM_OF_COLUMNS, KEYBOARD_KEYS, DELETE_KEY_VALUE } from "./const";
-import TheKey from "./components/TheKey";
+import TheKey, { TheKeyRef } from "./components/TheKey";
 import { THEME } from "../InputKeyboard/type";
 import clsx from "clsx";
 import { formatValues } from "../../functions/format";
@@ -46,7 +46,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const numOfColumns = useMemo(() => NUM_OF_COLUMNS[layoutType] ?? 3, [layoutType]);
   const keyboardKeys = useMemo(() => KEYBOARD_KEYS[layoutType] ?? KEYBOARD_KEYS[LayoutType.Decimal], [layoutType]);
   const [isOpen, setIsOpen] = useState(openInit);
-
+  const theKeyRefs = useRef<Record<string, TheKeyRef>>({});
   const isOpened = useMemo(() => {
     return isOpen || alwaysOpen;
   }, [isOpen, alwaysOpen]);
@@ -63,7 +63,6 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     onClose?.();
   };
 
-  //perform open when component is mounted if openInit is true or alwaysOpen is true
   useLayoutEffect(() => {
     if (openInit || alwaysOpen) {
       open();
@@ -165,6 +164,19 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     valueRef.current = exactValue;
   }, [value, validateKeyValue]);
 
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    event.preventDefault();
+    const keyValue = event.key;
+    theKeyRefs.current?.[keyValue]?.click();
+  }, []);
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
   return (
     <div style={{ ...styles?.container }} {...rest} className={clsx(theme, classNames?.container)}>
       {trigger && (
@@ -175,6 +187,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
 
       <div
         ref={keyboardsSectionRef}
+        onKeyDown={(e: any) => handleKeyDown(e)}
         className={clsx(theme, "keyboard-section", classNames?.keyboardContainer)}
         style={{
           height: toolbarFullHeight ? "100dvh" : "fit-content",
@@ -209,6 +222,9 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
           {keyboardKeys!.map((keyboard, index) => (
             <TheKey
               key={index}
+              ref={(el) => {
+                theKeyRefs.current[keyboard.value] = el as TheKeyRef;
+              }}
               keyboard={keyboard}
               handleKeyboardKeyClick={handleKeyboardKeyClick}
               classNames={classNames?.theKey}
