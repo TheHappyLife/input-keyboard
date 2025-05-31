@@ -199,6 +199,9 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
             <input
               ref={inputRef}
               type="text"
+              onFocus={() => {
+                console.warn("focus");
+              }}
               inputMode={layoutType as any}
               onChange={handleTypingBrowserInput}
               style={{

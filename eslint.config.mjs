@@ -13,7 +13,7 @@ const eslintConfig = [
   ...compat.extends("next/typescript"),
   {
     rules: {
-      "no-console": ["error", { allow: ["error"] }],
+      "no-console": ["error", { allow: ["warn", "error"] }],
       "no-unused-vars": "off",
       "react/react-in-jsx-scope": "off",
       "@typescript-eslint/no-unused-vars": "error",
