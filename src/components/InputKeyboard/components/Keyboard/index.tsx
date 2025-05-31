@@ -35,6 +35,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     alwaysOpen,
     trigger,
     openInit,
+    focusId,
     validateKeyValue = (value) => value,
     ...rest
   } = props;
@@ -49,14 +50,13 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const numOfColumns = useMemo(() => NUM_OF_COLUMNS[layoutType] ?? 3, [layoutType]);
   const keyboardKeys = useMemo(() => KEYBOARD_KEYS[layoutType] ?? KEYBOARD_KEYS[LayoutType.Decimal], [layoutType]);
   const [isOpen, setIsOpen] = useState(openInit);
-  const labelRef = useRef<HTMLLabelElement>(null);
   const theKeyRefs = useRef<Record<string, TheKeyRef>>({});
   const isOpened = useMemo(() => {
     return isOpen || alwaysOpen;
   }, [isOpen, alwaysOpen]);
 
   const open = () => {
-    labelRef.current?.click();
+    triggerRef.current?.click();
   };
 
   const handOpen = () => {
@@ -198,6 +198,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
           {isShowBrowserInput && (
             <input
               ref={inputRef}
+              id={focusId}
               type="text"
               onFocus={() => {
                 console.warn("focus");

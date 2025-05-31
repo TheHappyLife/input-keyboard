@@ -64,6 +64,7 @@ export interface KeyboardProps {
   value?: string;
   validateKeyValue?: (value: string) => string;
   layoutType?: LayoutType;
+  focusId?: string;
 }
 
 export interface KeyboardRef {
