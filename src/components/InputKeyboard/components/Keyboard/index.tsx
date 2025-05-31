@@ -1,5 +1,6 @@
 import React, {
   forwardRef,
+  KeyboardEventHandler,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -51,10 +52,18 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     return isOpen || alwaysOpen;
   }, [isOpen, alwaysOpen]);
 
+  // focus to listen physical keyboard event
+  const focusKeyboard = useCallback(() => {
+    setTimeout(() => {
+      keyboardsSectionRef.current?.focus();
+    }, 100);
+  }, []);
+
   const open = () => {
     setIsOpen(true);
     const height = keyboardsSectionRef.current?.clientHeight;
     onOpen?.(height);
+    focusKeyboard();
   };
 
   const close = () => {
@@ -117,7 +126,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
           break;
       }
     },
-    [keyboardType, updateValueAsNumber, updateValueAsString]
+    [keyboardType, updateValueAsNumber, updateValueAsString, value]
   );
 
   useEffect(() => {
@@ -164,19 +173,14 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     valueRef.current = exactValue;
   }, [value, validateKeyValue]);
 
-  const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    event.preventDefault();
-    if (!isOpened) return;
-    const keyValue = event.key;
-    theKeyRefs.current?.[keyValue]?.click();
-  }, []);
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [handleKeyDown]);
+  const handleKeyDown: KeyboardEventHandler = useCallback(
+    (event) => {
+      if (!isOpened) return;
+      const keyValue = event.key;
+      theKeyRefs.current?.[keyValue]?.click();
+    },
+    [isOpened]
+  );
 
   return (
     <div style={{ ...styles?.container }} {...rest} className={clsx(theme, classNames?.container)}>
@@ -188,7 +192,8 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
 
       <div
         ref={keyboardsSectionRef}
-        onKeyDown={(e: any) => handleKeyDown(e)}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
         className={clsx(theme, "keyboard-section", classNames?.keyboardContainer)}
         style={{
           height: toolbarFullHeight ? "100dvh" : "fit-content",

@@ -35,6 +35,7 @@
   flex-direction: column;
   max-height: 100dvh;
   max-width: 100vw;
+  outline: none;
 }
 
 .keyboard-toolbar {
@@ -106,6 +107,7 @@
   transition: background-color 0.1s ease;
   user-select: none;
   position: relative;
+  outline: none;
 }
 
 .key-normal::after {
