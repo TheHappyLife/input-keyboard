@@ -1,8 +1,9 @@
 import React, {
+  ChangeEventHandler,
   forwardRef,
-  KeyboardEventHandler,
   useCallback,
   useEffect,
+  useId,
   useImperativeHandle,
   useLayoutEffect,
   useMemo,
@@ -17,6 +18,7 @@ import clsx from "clsx";
 import { formatValues } from "../../functions/format";
 
 const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
+  const id = useId();
   const {
     keyboardType = KeyboardType.Number,
     layoutType = LayoutType.Decimal,
@@ -38,11 +40,18 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     validateKeyValue = (value) => value,
     ...rest
   } = props;
-  const triggerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLLabelElement>(null);
   const keyboardRef = useRef<HTMLDivElement>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const keyboardsSectionRef = useRef<HTMLDivElement>(null);
   const valueRef = useRef(value || "");
+  const isShowBrowserInput = useMemo(() => {
+    const touchPoints = navigator.maxTouchPoints;
+
+    if (!touchPoints) return true;
+
+    return !navigator.userAgent?.toLowerCase().includes("mobile");
+  }, []);
   const numOfRows = useMemo(() => NUM_OF_ROWS[layoutType] ?? 4, [layoutType]);
   const numOfColumns = useMemo(() => NUM_OF_COLUMNS[layoutType] ?? 3, [layoutType]);
   const keyboardKeys = useMemo(() => KEYBOARD_KEYS[layoutType] ?? KEYBOARD_KEYS[LayoutType.Decimal], [layoutType]);
@@ -52,27 +61,17 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     return isOpen || alwaysOpen;
   }, [isOpen, alwaysOpen]);
 
-  // focus to listen physical keyboard event
-  const focusKeyboard = useCallback(() => {
-    setTimeout(() => {
-      keyboardsSectionRef.current?.focus();
-    }, 100);
-  }, []);
-  const blurKeyboard = useCallback(() => {
-    keyboardsSectionRef.current?.blur();
-  }, []);
-
   const open = () => {
-    setIsOpen(true);
     const height = keyboardsSectionRef.current?.clientHeight;
     onOpen?.(height);
-    focusKeyboard();
+    if (isShowBrowserInput) return;
+
+    setIsOpen(true);
   };
 
   const close = () => {
     setIsOpen(false);
     onClose?.();
-    blurKeyboard();
   };
 
   useLayoutEffect(() => {
@@ -132,6 +131,15 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     [keyboardType, updateValueAsNumber, updateValueAsString, value]
   );
 
+  const handleTypingBrowserInput: ChangeEventHandler<HTMLInputElement> = useCallback((event) => {
+    const inputValue = event.target.value;
+
+    const isDelete = Math.max(value?.length, valueRef?.current?.length) > inputValue?.length;
+
+    const newChar = isDelete ? DELETE_KEY_VALUE : inputValue?.slice(-1);
+    theKeyRefs.current?.[newChar]?.click();
+  }, []);
+
   useEffect(() => {
     const body = document.querySelector("body");
     const box = document.createElement("div");
@@ -176,29 +184,36 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     valueRef.current = exactValue;
   }, [value, validateKeyValue]);
 
-  const handleKeyDown: KeyboardEventHandler = useCallback(
-    (event) => {
-      if (!isOpened) return;
-      event.preventDefault();
-      event.stopPropagation();
-      const keyValue = event.key;
-      theKeyRefs.current?.[keyValue]?.click();
-    },
-    [isOpened]
-  );
-
   return (
     <div style={{ ...styles?.container }} {...rest} className={clsx(theme, classNames?.container)}>
       {trigger && (
-        <div onClick={open} ref={triggerRef} className={clsx(classNames?.trigger)}>
+        <label
+          htmlFor={`${id}-browser-input`}
+          id={toolbarId}
+          onClick={open}
+          ref={triggerRef}
+          className={clsx(classNames?.trigger)}
+        >
           {trigger}
-        </div>
+          {isShowBrowserInput && (
+            <input
+              id={`${id}-browser-input`}
+              type="text"
+              inputMode={layoutType as any}
+              onChange={handleTypingBrowserInput}
+              style={{
+                width: 0,
+                height: 0,
+                position: "absolute",
+              }}
+              value={value}
+            />
+          )}
+        </label>
       )}
 
       <div
         ref={keyboardsSectionRef}
-        onKeyDown={handleKeyDown}
-        tabIndex={0}
         className={clsx(theme, "keyboard-section", classNames?.keyboardContainer)}
         style={{
           height: toolbarFullHeight ? "100dvh" : "fit-content",
@@ -208,7 +223,6 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
       >
         {!!toolbar && (
           <div
-            id={toolbarId}
             ref={toolbarRef}
             className={clsx(classNames?.toolbar)}
             style={{
@@ -220,6 +234,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
             {toolbar}
           </div>
         )}
+
         <div
           id={keyboardId}
           ref={keyboardRef}
