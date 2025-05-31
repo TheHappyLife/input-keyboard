@@ -58,6 +58,9 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
       keyboardsSectionRef.current?.focus();
     }, 100);
   }, []);
+  const blurKeyboard = useCallback(() => {
+    keyboardsSectionRef.current?.blur();
+  }, []);
 
   const open = () => {
     setIsOpen(true);
@@ -67,9 +70,9 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   };
 
   const close = () => {
-    console.warn("closed");
     setIsOpen(false);
     onClose?.();
+    blurKeyboard();
   };
 
   useLayoutEffect(() => {
@@ -176,6 +179,8 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const handleKeyDown: KeyboardEventHandler = useCallback(
     (event) => {
       if (!isOpened) return;
+      event.preventDefault();
+      event.stopPropagation();
       const keyValue = event.key;
       theKeyRefs.current?.[keyValue]?.click();
     },
