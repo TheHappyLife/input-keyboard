@@ -159,7 +159,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (alwaysOpen) return;
+      if (alwaysOpen || isShowBrowserInput) return;
       const isClickOnTrigger = triggerRef.current?.contains(event.target as Node);
       const isClickOnKeyboard = keyboardRef.current?.contains(event.target as Node);
       const isClickOnToolbar = toolbarRef.current?.contains(event.target as Node);
@@ -179,7 +179,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [alwaysOpen]);
+  }, [alwaysOpen, isShowBrowserInput]);
 
   useEffect(() => {
     const validatedValue = validateKeyValue?.(value || "");
@@ -190,29 +190,29 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
 
   return (
     <div style={{ ...styles?.container }} {...rest} className={clsx(theme, classNames?.container)}>
-      {trigger && (
-        <>
-          <label id={toolbarId} onClick={handOpen} ref={triggerRef} className={clsx(classNames?.trigger)}>
-            {trigger}
-          </label>
-          {isShowBrowserInput && (
-            <input
-              ref={inputRef}
-              id={focusId}
-              type="text"
-              onFocus={() => {
-                console.warn("focus");
-              }}
-              inputMode={layoutType as any}
-              onChange={handleTypingBrowserInput}
-              style={{
-                width: 0,
-                height: 0,
-              }}
-              value={value}
-            />
-          )}
-        </>
+      <label onClick={handOpen} ref={triggerRef} className={clsx(classNames?.trigger)}>
+        {trigger}
+      </label>
+
+      {isShowBrowserInput && (
+        <input
+          ref={inputRef}
+          id={focusId}
+          type="text"
+          onFocus={(e) => {
+            console.warn("focus", e);
+          }}
+          onBlur={(e) => {
+            console.warn("blur", e);
+          }}
+          inputMode={layoutType as any}
+          onChange={handleTypingBrowserInput}
+          style={{
+            width: 0,
+            height: 0,
+          }}
+          value={value}
+        />
       )}
 
       <div
@@ -226,6 +226,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
       >
         {!!toolbar && (
           <div
+            id={toolbarId}
             ref={toolbarRef}
             className={clsx(classNames?.toolbar)}
             style={{
