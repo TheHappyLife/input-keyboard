@@ -62,9 +62,9 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   }, [isOpen, alwaysOpen]);
 
   const open = () => {
+    if (isShowBrowserInput) return;
     const height = keyboardsSectionRef.current?.clientHeight;
     onOpen?.(height);
-    if (isShowBrowserInput) return;
 
     setIsOpen(true);
   };
@@ -242,6 +242,9 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
           style={{
             gridTemplateColumns: `repeat(${numOfColumns}, 1fr)`,
             gridTemplateRows: `repeat(${numOfRows}, 1fr)`,
+            maxHeight: isShowBrowserInput ? "0px !important" : "fit-content",
+            padding: isShowBrowserInput ? "0px !important" : "0.44rem 0.44rem 1.5rem",
+            overflow: "hidden",
             ...styles?.keyboards,
           }}
         >
