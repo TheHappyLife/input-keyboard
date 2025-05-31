@@ -1,12 +1,10 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 
 export const useKeyboard = () => {
-  const isShowBrowserInput = useMemo(() => {
-    const touchPoints = navigator.maxTouchPoints;
+  const [isShowBrowserInput, setIsShowBrowserInput] = useState<boolean | null>(null);
 
-    if (!touchPoints) return true;
-
-    return !navigator.userAgent?.toLowerCase().includes("mobile");
+  useEffect(() => {
+    setIsShowBrowserInput(!navigator.userAgent?.toLowerCase().includes("mobile"));
   }, []);
 
   return {

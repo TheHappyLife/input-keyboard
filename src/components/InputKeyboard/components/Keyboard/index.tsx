@@ -3,9 +3,7 @@ import React, {
   forwardRef,
   useCallback,
   useEffect,
-  useId,
   useImperativeHandle,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -19,7 +17,6 @@ import { formatValues } from "../../functions/format";
 import { useKeyboard } from "../../hook/useKeyboard";
 
 const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
-  const id = useId();
   const {
     keyboardType = KeyboardType.Number,
     layoutType = LayoutType.Decimal,
@@ -45,31 +42,42 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const keyboardRef = useRef<HTMLDivElement>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const keyboardsSectionRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const valueRef = useRef(value || "");
   const { isShowBrowserInput } = useKeyboard();
   const numOfRows = useMemo(() => NUM_OF_ROWS[layoutType] ?? 4, [layoutType]);
   const numOfColumns = useMemo(() => NUM_OF_COLUMNS[layoutType] ?? 3, [layoutType]);
   const keyboardKeys = useMemo(() => KEYBOARD_KEYS[layoutType] ?? KEYBOARD_KEYS[LayoutType.Decimal], [layoutType]);
   const [isOpen, setIsOpen] = useState(openInit);
+  const labelRef = useRef<HTMLLabelElement>(null);
   const theKeyRefs = useRef<Record<string, TheKeyRef>>({});
   const isOpened = useMemo(() => {
     return isOpen || alwaysOpen;
   }, [isOpen, alwaysOpen]);
 
   const open = () => {
-    if (isShowBrowserInput) return;
+    labelRef.current?.click();
+  };
+
+  const handOpen = () => {
+    if (isShowBrowserInput) {
+      inputRef.current?.focus();
+
+      return;
+    }
+
     const height = keyboardsSectionRef.current?.clientHeight;
     onOpen?.(height);
-
     setIsOpen(true);
   };
 
   const close = () => {
     setIsOpen(false);
     onClose?.();
+    inputRef.current?.blur();
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (openInit || alwaysOpen) {
       open();
     }
@@ -136,6 +144,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   }, []);
 
   useEffect(() => {
+    if (isShowBrowserInput === null) return;
     const body = document.querySelector("body");
     const box = document.createElement("div");
     if (keyboardsSectionRef.current) {
@@ -146,7 +155,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     return () => {
       box?.remove();
     };
-  }, []);
+  }, [isShowBrowserInput]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -182,29 +191,24 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   return (
     <div style={{ ...styles?.container }} {...rest} className={clsx(theme, classNames?.container)}>
       {trigger && (
-        <label
-          htmlFor={`${id}-browser-input`}
-          id={toolbarId}
-          onClick={open}
-          ref={triggerRef}
-          className={clsx(classNames?.trigger)}
-        >
-          {trigger}
+        <>
+          <label id={toolbarId} onClick={handOpen} ref={triggerRef} className={clsx(classNames?.trigger)}>
+            {trigger}
+          </label>
           {isShowBrowserInput && (
             <input
-              id={`${id}-browser-input`}
+              ref={inputRef}
               type="text"
               inputMode={layoutType as any}
               onChange={handleTypingBrowserInput}
               style={{
                 width: 0,
                 height: 0,
-                position: "absolute",
               }}
               value={value}
             />
           )}
-        </label>
+        </>
       )}
 
       <div
@@ -237,9 +241,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
           style={{
             gridTemplateColumns: `repeat(${numOfColumns}, 1fr)`,
             gridTemplateRows: `repeat(${numOfRows}, 1fr)`,
-            maxHeight: isShowBrowserInput ? "0px !important" : "fit-content",
-            padding: isShowBrowserInput ? "0px !important" : "0.44rem 0.44rem 1.5rem",
-            overflow: "hidden",
+            display: isShowBrowserInput !== false ? "none" : "initial",
             ...styles?.keyboards,
           }}
         >
