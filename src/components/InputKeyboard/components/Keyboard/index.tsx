@@ -16,6 +16,7 @@ import TheKey, { TheKeyRef } from "./components/TheKey";
 import { THEME } from "../InputKeyboard/type";
 import clsx from "clsx";
 import { formatValues } from "../../functions/format";
+import { useKeyboard } from "../../hook/useKeyboard";
 
 const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const id = useId();
@@ -45,13 +46,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const toolbarRef = useRef<HTMLDivElement>(null);
   const keyboardsSectionRef = useRef<HTMLDivElement>(null);
   const valueRef = useRef(value || "");
-  const isShowBrowserInput = useMemo(() => {
-    const touchPoints = navigator.maxTouchPoints;
-
-    if (!touchPoints) return true;
-
-    return !navigator.userAgent?.toLowerCase().includes("mobile");
-  }, []);
+  const { isShowBrowserInput } = useKeyboard();
   const numOfRows = useMemo(() => NUM_OF_ROWS[layoutType] ?? 4, [layoutType]);
   const numOfColumns = useMemo(() => NUM_OF_COLUMNS[layoutType] ?? 3, [layoutType]);
   const keyboardKeys = useMemo(() => KEYBOARD_KEYS[layoutType] ?? KEYBOARD_KEYS[LayoutType.Decimal], [layoutType]);
