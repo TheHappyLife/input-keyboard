@@ -45,6 +45,7 @@
 .board-of-keys-container {
   display: grid;
   gap: 0.44rem;
+  padding: 0.44rem 0.44rem 1.5rem;
   backdrop-filter: blur(35px);
   color: var(--keyboard-color);
   background-color: var(--keyboard-background-color);

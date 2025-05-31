@@ -241,7 +241,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
           style={{
             gridTemplateColumns: `repeat(${numOfColumns}, 1fr)`,
             gridTemplateRows: `repeat(${numOfRows}, 1fr)`,
-            display: isShowBrowserInput !== false ? "none" : "initial",
+            display: isShowBrowserInput !== false ? "none" : "grid",
             ...styles?.keyboards,
           }}
         >
