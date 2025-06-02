@@ -188,7 +188,11 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   );
 
   return (
-    <div style={{ ...styles?.container }} {...rest} className={clsx(theme, classNames?.container)}>
+    <div
+      style={{ ...styles?.container }}
+      {...rest}
+      className={clsx("keyboard-container", theme, classNames?.container)}
+    >
       {trigger && (
         <div onClick={open} ref={triggerRef} className={clsx(classNames?.trigger)}>
           {trigger}

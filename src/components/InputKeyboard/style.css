@@ -24,6 +24,11 @@
   --input-placeholder-color: #888;
 }
 
+.keyboard-container,
+.keyboard-container * {
+  outline: none !important;
+}
+
 .keyboard-section {
   position: fixed;
   height: fit-content;
