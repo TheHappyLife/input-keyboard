@@ -18,8 +18,8 @@ export interface InputKeyboardRef {
 }
 
 export enum THEME {
-  LIGHT = "light",
-  DARK = "dark",
+  LIGHT = "tek-keyboard-light",
+  DARK = "tek-keyboard-dark",
 }
 
 export enum DisplayType {
