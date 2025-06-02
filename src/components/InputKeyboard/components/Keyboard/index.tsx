@@ -53,26 +53,26 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   }, [isOpen, alwaysOpen]);
 
   // focus to listen physical keyboard event
-  const focusKeyboard = useCallback(() => {
-    setTimeout(() => {
-      keyboardsSectionRef.current?.focus();
-    }, 100);
-  }, []);
-  const blurKeyboard = useCallback(() => {
-    keyboardsSectionRef.current?.blur();
-  }, []);
+  // const focusKeyboard = useCallback(() => {
+  //   setTimeout(() => {
+  //     keyboardsSectionRef.current?.focus();
+  //   }, 100);
+  // }, []);
+  // const blurKeyboard = useCallback(() => {
+  //   keyboardsSectionRef.current?.blur();
+  // }, []);
 
   const open = () => {
     setIsOpen(true);
     const height = keyboardsSectionRef.current?.clientHeight;
     onOpen?.(height);
-    focusKeyboard();
+    // focusKeyboard();
   };
 
   const close = () => {
     setIsOpen(false);
     onClose?.();
-    blurKeyboard();
+    // blurKeyboard();
   };
 
   useLayoutEffect(() => {
@@ -187,6 +187,14 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     [isOpened]
   );
 
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown as unknown as EventListener);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown as unknown as EventListener);
+    };
+  }, [handleKeyDown]);
+
   return (
     <div
       style={{ ...styles?.container }}
@@ -201,8 +209,8 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
 
       <div
         ref={keyboardsSectionRef}
-        onKeyDown={handleKeyDown}
-        tabIndex={0}
+        // onKeyDown={handleKeyDown}
+        // tabIndex={0}
         className={clsx(theme, "keyboard-section", classNames?.keyboardContainer)}
         style={{
           height: toolbarFullHeight ? "100dvh" : "fit-content",
