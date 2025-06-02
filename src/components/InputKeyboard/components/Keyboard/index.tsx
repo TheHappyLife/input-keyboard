@@ -1,9 +1,10 @@
 import React, {
-  ChangeEventHandler,
   forwardRef,
+  KeyboardEventHandler,
   useCallback,
   useEffect,
   useImperativeHandle,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -14,7 +15,6 @@ import TheKey, { TheKeyRef } from "./components/TheKey";
 import { THEME } from "../InputKeyboard/type";
 import clsx from "clsx";
 import { formatValues } from "../../functions/format";
-import { useKeyboard } from "../../hook/useKeyboard";
 
 const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
   const {
@@ -35,17 +35,14 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     alwaysOpen,
     trigger,
     openInit,
-    focusId,
     validateKeyValue = (value) => value,
     ...rest
   } = props;
-  const triggerRef = useRef<HTMLLabelElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
   const keyboardRef = useRef<HTMLDivElement>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const keyboardsSectionRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
   const valueRef = useRef(value || "");
-  const { isShowBrowserInput } = useKeyboard();
   const numOfRows = useMemo(() => NUM_OF_ROWS[layoutType] ?? 4, [layoutType]);
   const numOfColumns = useMemo(() => NUM_OF_COLUMNS[layoutType] ?? 3, [layoutType]);
   const keyboardKeys = useMemo(() => KEYBOARD_KEYS[layoutType] ?? KEYBOARD_KEYS[LayoutType.Decimal], [layoutType]);
@@ -55,29 +52,30 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     return isOpen || alwaysOpen;
   }, [isOpen, alwaysOpen]);
 
+  // focus to listen physical keyboard event
+  const focusKeyboard = useCallback(() => {
+    setTimeout(() => {
+      keyboardsSectionRef.current?.focus();
+    }, 100);
+  }, []);
+  const blurKeyboard = useCallback(() => {
+    keyboardsSectionRef.current?.blur();
+  }, []);
+
   const open = () => {
-    triggerRef.current?.click();
-  };
-
-  const handOpen = () => {
-    if (isShowBrowserInput) {
-      inputRef.current?.focus();
-
-      return;
-    }
-
+    setIsOpen(true);
     const height = keyboardsSectionRef.current?.clientHeight;
     onOpen?.(height);
-    setIsOpen(true);
+    focusKeyboard();
   };
 
   const close = () => {
     setIsOpen(false);
     onClose?.();
-    inputRef.current?.blur();
+    blurKeyboard();
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (openInit || alwaysOpen) {
       open();
     }
@@ -134,17 +132,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     [keyboardType, updateValueAsNumber, updateValueAsString, value]
   );
 
-  const handleTypingBrowserInput: ChangeEventHandler<HTMLInputElement> = useCallback((event) => {
-    const inputValue = event.target.value;
-
-    const isDelete = Math.max(value?.length, valueRef?.current?.length) > inputValue?.length;
-
-    const newChar = isDelete ? DELETE_KEY_VALUE : inputValue?.slice(-1);
-    theKeyRefs.current?.[newChar]?.click();
-  }, []);
-
   useEffect(() => {
-    if (isShowBrowserInput === null) return;
     const body = document.querySelector("body");
     const box = document.createElement("div");
     if (keyboardsSectionRef.current) {
@@ -155,11 +143,11 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     return () => {
       box?.remove();
     };
-  }, [isShowBrowserInput]);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (alwaysOpen || isShowBrowserInput) return;
+      if (alwaysOpen) return;
       const isClickOnTrigger = triggerRef.current?.contains(event.target as Node);
       const isClickOnKeyboard = keyboardRef.current?.contains(event.target as Node);
       const isClickOnToolbar = toolbarRef.current?.contains(event.target as Node);
@@ -179,7 +167,7 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [alwaysOpen, isShowBrowserInput]);
+  }, [alwaysOpen]);
 
   useEffect(() => {
     const validatedValue = validateKeyValue?.(value || "");
@@ -188,35 +176,29 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
     valueRef.current = exactValue;
   }, [value, validateKeyValue]);
 
+  const handleKeyDown: KeyboardEventHandler = useCallback(
+    (event) => {
+      if (!isOpened) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const keyValue = event.key;
+      theKeyRefs.current?.[keyValue]?.click();
+    },
+    [isOpened]
+  );
+
   return (
     <div style={{ ...styles?.container }} {...rest} className={clsx(theme, classNames?.container)}>
-      <label onClick={handOpen} ref={triggerRef} className={clsx(classNames?.trigger)}>
-        {trigger}
-      </label>
-
-      {isShowBrowserInput && (
-        <input
-          ref={inputRef}
-          id={focusId}
-          type="text"
-          onFocus={(e) => {
-            console.warn("focus", e);
-          }}
-          onBlur={(e) => {
-            console.warn("blur", e);
-          }}
-          inputMode={layoutType as any}
-          onChange={handleTypingBrowserInput}
-          style={{
-            width: 0,
-            height: 0,
-          }}
-          value={value}
-        />
+      {trigger && (
+        <div onClick={open} ref={triggerRef} className={clsx(classNames?.trigger)}>
+          {trigger}
+        </div>
       )}
 
       <div
         ref={keyboardsSectionRef}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
         className={clsx(theme, "keyboard-section", classNames?.keyboardContainer)}
         style={{
           height: toolbarFullHeight ? "100dvh" : "fit-content",
@@ -238,7 +220,6 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
             {toolbar}
           </div>
         )}
-
         <div
           id={keyboardId}
           ref={keyboardRef}
@@ -246,7 +227,6 @@ const Keyboard = forwardRef<KeyboardRef, KeyboardProps>((props, ref) => {
           style={{
             gridTemplateColumns: `repeat(${numOfColumns}, 1fr)`,
             gridTemplateRows: `repeat(${numOfRows}, 1fr)`,
-            display: isShowBrowserInput !== false ? "none" : "grid",
             ...styles?.keyboards,
           }}
         >

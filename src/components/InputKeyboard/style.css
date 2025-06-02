@@ -51,6 +51,12 @@
   background-color: var(--keyboard-background-color);
 }
 
+@media (min-width: 1024px) {
+  .board-of-keys-container {
+    display: none;
+  }
+}
+
 .input-container {
   display: flex;
   align-items: center;

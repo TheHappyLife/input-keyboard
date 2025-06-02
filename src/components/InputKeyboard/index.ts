@@ -2,7 +2,7 @@
 export { InputKeyboard } from "./components/InputKeyboard";
 export { Input } from "./components/Input";
 export { Keyboard } from "./components/Keyboard";
-export { useKeyboard } from "./hook/useKeyboard";
+
 // InputKeyboard types
 export { THEME, DisplayType } from "./components/InputKeyboard/type";
 export type {
