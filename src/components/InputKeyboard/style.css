@@ -1,4 +1,4 @@
-.tek-keyboard-light {
+.light {
   /* Light theme */
   --keyboard-background-color: rgba(206, 210, 217, 0.7);
   --keyboard-color: #000;
@@ -11,7 +11,7 @@
   --input-placeholder-color: #888;
 }
 
-.tek-keyboard-dark {
+.dark {
   /* Dark theme */
   --keyboard-background-color: rgba(32, 32, 32, 0.92);
   --keyboard-color: #fff;
